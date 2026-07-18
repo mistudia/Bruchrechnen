@@ -1,0 +1,735 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>miStudia – Bruchrechnen</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0}
+header,main,footer{max-width:900px;margin:auto}
+header{background:#fff;padding:20px;text-align:center}
+main{background:#fff;margin-top:20px;padding:20px;border-radius:12px}
+.toolbar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+button{padding:10px 16px;border:none;border-radius:8px;background:#1e88e5;color:#fff;cursor:pointer}
+#bruchpaar{display:flex;justify-content:center;align-items:center;gap:40px;margin:30px 0}
+.bruch{display:grid;grid-template-rows:auto 2px auto;justify-items:center;font-size:32px;font-weight:bold}
+.strich{width:55px;height:2px;background:#000}
+.aufgabe{
+display:grid;
+grid-template-columns:40px auto 160px;
+gap:20px;
+align-items:center;
+margin:20px 0;
+font-size:24px;
+}
+
+.rechnung{
+display:flex;
+align-items:center;
+gap:12px;
+font-size:26px;
+}
+
+.bruch-klein{
+display:grid;
+grid-template-rows:auto 2px auto;
+justify-items:center;
+width:42px;
+font-size:22px;
+font-weight:bold;
+line-height:1.1;
+}
+
+.bruch-klein .strich{
+width:40px;
+height:2px;
+background:#000;
+margin:2px 0;
+}
+
+input{font-size:22px;padding:8px;text-align:center}
+footer{text-align:center;padding:20px;color:#666}
+
+
+#elefant{
+position:fixed;
+right:25px;
+bottom:20px;
+font-size:90px;
+display:none;
+z-index:999;
+animation:winken .8s infinite alternate;
+}
+
+@keyframes winken{
+from{transform:rotate(-6deg);}
+to{transform:rotate(6deg);}
+}
+
+.konfetti{
+position:fixed;
+width:10px;
+height:10px;
+top:-20px;
+animation:fallen 3s linear forwards;
+z-index:998;
+}
+
+@keyframes fallen{
+
+to{
+transform:translateY(110vh) rotate(720deg);
+opacity:0;
+}
+
+}
+
+button{
+background:#1976d2;
+color:white;
+border:none;
+border-radius:10px;
+padding:12px 22px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:.25s;
+box-shadow:0 4px 10px rgba(0,0,0,.18);
+}
+
+button:hover{
+background:#1565c0;
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(0,0,0,.25);
+}
+
+button:active{
+transform:scale(.98);
+}
+
+input{
+font-size:22px;
+padding:10px;
+text-align:center;
+border:2px solid #90caf9;
+border-radius:8px;
+outline:none;
+transition:.2s;
+}
+
+input:focus{
+border-color:#1976d2;
+box-shadow:0 0 8px rgba(25,118,210,.3);
+}
+
+
+main{
+background:white;
+margin-top:25px;
+padding:30px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+
+body{
+font-family:Arial,sans-serif;
+margin:0;
+background:linear-gradient(#eef5ff,#dfefff);
+}
+
+header{
+background:white;
+padding:25px;
+text-align:center;
+}
+
+h1{
+margin:0;
+font-size:38px;
+color:#1565c0;
+}
+
+footer{
+margin-top:30px;
+padding:25px;
+text-align:center;
+color:#666;
+font-size:15px;
+}
+
+#logoOben{
+display:block;
+margin:0 auto 15px;
+max-width:320px;
+width:100%;
+height:auto;
+transition:.25s;
+}
+
+#logoOben:hover{
+transform:scale(1.03);
+}
+
+#logoUnten{
+display:block;
+margin:0 auto 10px;
+max-width:140px;
+height:auto;
+opacity:.9;
+}
+
+footer{
+margin-top:40px;
+text-align:center;
+padding:25px;
+color:#666;
+font-size:15px;
+border-top:1px solid #ddd;
+}
+
+#logoOben,
+#logoUnten{
+transition:.25s;
+}
+
+#logoOben:hover,
+#logoUnten:hover{
+transform:scale(1.03);
+}
+
+footer a{
+color:#1565c0;
+font-weight:bold;
+text-decoration:none;
+}
+
+footer a:hover{
+text-decoration:underline;
+}
+
+
+
+
+
+</style>
+</head>
+<body>
+<header>
+
+<a href="https://mistudia.com" target="_blank" rel="noopener noreferrer">
+    <img src="mistudia-logo.png" id="logoOben" alt="miStudia – Lernen mit Spaß!">
+</a>
+
+<h1 id="titel">Bruchrechnen</h1>
+
+<div class="toolbar">
+<button onclick="sprache('de')">🇩🇪</button>
+<button onclick="sprache('en')">🇺🇸</button>
+<button onclick="sprache('es')">🇪🇸</button>
+</div>
+<div class="toolbar">
+<button id="btnLeicht" onclick="stufe='leicht'; neueBrueche();">😊 Leicht</button>
+
+<button id="btnMittel" onclick="stufe='mittel'; neueBrueche();">🧠 Mittel</button>
+
+<button id="btnSchwer" onclick="stufe='schwer'; neueBrueche();">🔥 Schwer</button>
+</div>
+
+</header>
+
+<main>
+
+<div class="aufgabe">
+
+<div>➕</div>
+
+<div class="rechnung" id="plusText"></div>
+
+<input id="plus">
+
+</div>
+
+
+<div class="aufgabe">
+
+<div>➖</div>
+
+<div class="rechnung" id="minusText"></div>
+
+<input id="minus">
+
+</div>
+
+<div class="aufgabe">
+
+<div>✖️</div>
+
+<div class="rechnung" id="malText"></div>
+
+<input id="mal">
+
+</div>
+
+
+<div class="aufgabe">
+
+<div>➗</div>
+
+<div class="rechnung" id="geteiltText"></div>
+
+<input id="geteilt">
+
+</div>
+
+
+
+<div class="toolbar">
+<button id="pruefen">✓ Prüfen</button>
+<button id="loesung">💡 Lösungen</button>
+<button id="neu">🔄 Neue Brüche</button>
+</div>
+
+
+<div id="elefant">🐘</div>
+
+<div id="konfetti"></div>
+
+
+</main>
+
+<footer>
+
+<a href="https://mistudia.com" target="_blank" rel="noopener noreferrer">
+    <img src="mistudia-logo.png" id="logoUnten" alt="miStudia – Lernen mit Spaß!">
+</a>
+
+<div>
+© <span id="jahr"></span> miStudia |
+<a href="https://mistudia.com" target="_blank" rel="noopener noreferrer">
+mistudia.com
+</a>
+</div>
+
+</footer>
+
+
+<script>
+document.getElementById("jahr").textContent=new Date().getFullYear();
+let stufe="leicht";
+
+const texte={
+
+de:{
+titel:"Bruchrechnen",
+pruefen:"✓ Prüfen",
+loesung:"💡 Lösungen",
+neu:"🔄 Neue Brüche",
+leicht:"😊 Leicht",
+mittel:"🧠 Mittel",
+schwer:"🔥 Schwer"
+},
+
+en:{
+titel:"Fraction Arithmetic",
+pruefen:"✓ Check",
+loesung:"💡 Show answers",
+neu:"🔄 New fractions",
+leicht:"😊 Easy",
+mittel:"🧠 Medium",
+schwer:"🔥 Hard"
+},
+
+es:{
+titel:"Fracciones",
+pruefen:"✓ Comprobar",
+loesung:"💡 Soluciones",
+neu:"🔄 Nuevas fracciones",
+leicht:"😊 Fácil",
+mittel:"🧠 Medio",
+schwer:"🔥 Difícil"
+}
+
+};
+
+
+function sprache(s){
+
+document.getElementById("titel").textContent=texte[s].titel;
+
+document.getElementById("pruefen").textContent=texte[s].pruefen;
+document.getElementById("loesung").textContent=texte[s].loesung;
+document.getElementById("neu").textContent=texte[s].neu;
+
+document.getElementById("btnLeicht").textContent=texte[s].leicht;
+document.getElementById("btnMittel").textContent=texte[s].mittel;
+document.getElementById("btnSchwer").textContent=texte[s].schwer;
+
+}
+
+
+
+// Teil 2 ergänzt Rechenlogik, Generator, Prüfen und Lösungen.
+
+// ------------------------------
+// Bruchfunktionen
+// ------------------------------
+
+function ggt(a, b) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+
+    while (b !== 0) {
+        let h = b;
+        b = a % b;
+        a = h;
+    }
+
+    return a;
+}
+
+function kuerzen(z, n) {
+
+    if (n < 0) {
+        z *= -1;
+        n *= -1;
+    }
+
+    const g = ggt(z, n);
+
+    return {
+        z: z / g,
+        n: n / g
+    };
+}
+
+function add(b1, b2) {
+
+    return kuerzen(
+        b1.z * b2.n + b2.z * b1.n,
+        b1.n * b2.n
+    );
+
+}
+
+function sub(b1, b2) {
+
+    return kuerzen(
+        b1.z * b2.n - b2.z * b1.n,
+        b1.n * b2.n
+    );
+
+}
+
+function mul(b1, b2) {
+
+    return kuerzen(
+        b1.z * b2.z,
+        b1.n * b2.n
+    );
+
+}
+
+function divi(b1, b2) {
+
+    return kuerzen(
+        b1.z * b2.n,
+        b1.n * b2.z
+    );
+
+}
+
+
+const leicht = [
+
+{z1:1,n1:2,z2:1,n2:4},
+{z1:2,n1:5,z2:1,n2:5},
+{z1:3,n1:8,z2:1,n2:8},
+{z1:3,n1:4,z2:1,n2:4},
+{z1:2,n1:3,z2:1,n2:3},
+{z1:4,n1:5,z2:1,n2:5}
+
+];
+
+const mittel = [
+
+{z1:2,n1:5,z2:1,n2:3},
+{z1:3,n1:4,z2:5,n2:6},
+{z1:4,n1:9,z2:2,n2:3},
+{z1:5,n1:8,z2:1,n2:6},
+{z1:7,n1:10,z2:3,n2:5},
+{z1:5,n1:12,z2:1,n2:4}
+
+];
+
+const schwer = [
+
+{z1:7,n1:12,z2:5,n2:18},
+{z1:11,n1:15,z2:7,n2:10},
+{z1:13,n1:20,z2:9,n2:14},
+{z1:9,n1:16,z2:11,n2:24},
+{z1:7,n1:18,z2:5,n2:12},
+{z1:11,n1:24,z2:13,n2:30}
+
+];
+
+let bruch1;
+let bruch2;
+
+function jubel(){
+
+const elefant=document.getElementById("elefant");
+elefant.style.display="block";
+
+const farben=[
+"#e53935",
+"#43a047",
+"#1e88e5",
+"#fdd835",
+"#8e24aa",
+"#fb8c00"
+];
+
+for(let i=0;i<120;i++){
+
+const k=document.createElement("div");
+k.className="konfetti";
+
+k.style.left=Math.random()*100+"vw";
+k.style.background=farben[Math.floor(Math.random()*farben.length)];
+k.style.animationDelay=Math.random()+"s";
+
+document.body.appendChild(k);
+
+setTimeout(()=>k.remove(),4000);
+
+}
+
+setTimeout(()=>{
+
+elefant.style.display="none";
+
+},3500);
+
+}
+
+function neueBrueche() {
+
+    let liste;
+
+    if (stufe === "leicht")
+        liste = leicht;
+
+    if (stufe === "mittel")
+        liste = mittel;
+
+    if (stufe === "schwer")
+        liste = schwer;
+
+    const p = liste[Math.floor(Math.random()*liste.length)];
+
+    bruch1 = {
+        z:p.z1,
+        n:p.n1
+    };
+
+    bruch2 = {
+        z:p.z2,
+        n:p.n2
+    };
+
+
+ function bruchHTML(z,n){
+return `
+<div class="bruch-klein">
+<div>${z}</div>
+<div class="strich"></div>
+<div>${n}</div>
+</div>`;
+}
+
+document.getElementById("plusText").innerHTML =
+bruchHTML(bruch1.z,bruch1.n)+" + "+
+bruchHTML(bruch2.z,bruch2.n)+" =";
+
+document.getElementById("minusText").innerHTML =
+bruchHTML(bruch1.z,bruch1.n)+" − "+
+bruchHTML(bruch2.z,bruch2.n)+" =";
+
+document.getElementById("malText").innerHTML =
+bruchHTML(bruch1.z,bruch1.n)+" × "+
+bruchHTML(bruch2.z,bruch2.n)+" =";
+
+document.getElementById("geteiltText").innerHTML =
+bruchHTML(bruch1.z,bruch1.n)+" ÷ "+
+bruchHTML(bruch2.z,bruch2.n)+" =";
+
+document.querySelectorAll("input").forEach(f => {
+    f.value = "";
+    f.style.background = "white";
+    f.style.color = "black";
+});
+
+}
+
+// ------------------------------
+// Benutzereingabe lesen
+// ------------------------------
+
+function leseBruch(text) {
+
+    text = text.replace(/\s/g, "");
+
+    const teile = text.split("/");
+
+    if (teile.length !== 2)
+        return null;
+
+    const z = parseInt(teile[0]);
+    const n = parseInt(teile[1]);
+
+    if (isNaN(z) || isNaN(n) || n === 0)
+        return null;
+
+    return { z, n };
+}
+
+// ------------------------------
+// Ergebnis vergleichen
+// ------------------------------
+
+function pruefeAntwort(eingabe, loesung) {
+
+    if (eingabe === null)
+        return "falsch";
+
+    // mathematisch gleich?
+
+    if (eingabe.z * loesung.n !== loesung.z * eingabe.n)
+        return "falsch";
+
+    const g = ggt(eingabe.z, eingabe.n);
+
+    if (g === 1)
+        return "perfekt";
+
+    return "kuerzen";
+
+}
+
+// ------------------------------
+// Farbe setzen
+// ------------------------------
+
+function markiere(input, status) {
+
+    input.style.color = "black";
+
+    if (status === "perfekt") {
+
+        input.style.background = "#c8e6c9";
+
+    }
+
+    else if (status === "kuerzen") {
+
+        input.style.background = "#fff59d";
+
+    }
+
+    else {
+
+        input.style.background = "#ffcdd2";
+
+    }
+
+}
+
+document.getElementById("pruefen").onclick = function () {
+
+    const ergPlus = add(bruch1, bruch2);
+    const ergMinus = sub(bruch1, bruch2);
+    const ergMal = mul(bruch1, bruch2);
+    const ergGeteilt = divi(bruch1, bruch2);
+
+    const felder = [
+        {
+            input: document.getElementById("plus"),
+            loesung: ergPlus
+        },
+        {
+            input: document.getElementById("minus"),
+            loesung: ergMinus
+        },
+        {
+            input: document.getElementById("mal"),
+            loesung: ergMal
+        },
+        {
+            input: document.getElementById("geteilt"),
+            loesung: ergGeteilt
+        }
+    ];
+
+    let richtig = 0;
+
+    felder.forEach(f => {
+
+        const eingabe = leseBruch(f.input.value);
+
+        const status = pruefeAntwort(eingabe, f.loesung);
+
+        markiere(f.input, status);
+
+        if (status === "perfekt")
+            richtig++;
+
+    });
+
+    if (richtig === 4) {
+
+jubel();
+
+        // Hier kommt später der Jubel-Elefant.
+
+    }
+
+};
+
+document.getElementById("loesung").onclick = function () {
+
+    const l1 = add(bruch1, bruch2);
+    const l2 = sub(bruch1, bruch2);
+    const l3 = mul(bruch1, bruch2);
+    const l4 = divi(bruch1, bruch2);
+
+    document.getElementById("plus").value =
+        l1.z + "/" + l1.n;
+
+    document.getElementById("minus").value =
+        l2.z + "/" + l2.n;
+
+    document.getElementById("mal").value =
+        l3.z + "/" + l3.n;
+
+    document.getElementById("geteilt").value =
+        l4.z + "/" + l4.n;
+
+document.querySelectorAll("input").forEach(f=>{
+    f.style.background="#c8e6c9";
+});
+
+};
+
+document.getElementById("neu").onclick = function () {
+
+    neueBrueche();
+
+};
+
+neueBrueche();
+
+
+</script>
+</body>
+</html>
