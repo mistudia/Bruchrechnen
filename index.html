@@ -25,20 +25,23 @@ font-size:24px;
 }
 
 .rechnung{
-display:flex;
-align-items:center;
-gap:12px;
-font-size:26px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+    white-space:nowrap;
 }
 
 .bruch-klein{
-display:grid;
-grid-template-rows:auto 2px auto;
-justify-items:center;
-width:42px;
-font-size:22px;
-font-weight:bold;
-line-height:1.1;
+    display:inline-grid;
+    grid-template-rows:auto 2px auto;
+    justify-items:center;
+    width:42px;
+    font-size:22px;
+    font-weight:bold;
+    line-height:1.1;
+    vertical-align:middle;
+    flex:0 0 auto;
 }
 
 .bruch-klein .strich{
@@ -216,6 +219,44 @@ font-size:18px;
 text-align:left;
 }
 
+.schritt{
+    width:130px;
+    font-size:18px;
+    padding:6px;
+    text-align:center;
+}
+
+#plus,
+#minus,
+#mal,
+#geteilt{
+    width:70px;
+}
+
+.btn-pruefen{
+    background:#3367d6;
+}
+
+.btn-pruefen:hover{
+    background:#2b57b5;
+}
+
+.btn-loesung{
+    background:#1ea64b;
+}
+
+.btn-loesung:hover{
+    background:#198c3f;
+}
+
+.btn-neu{
+    background:#f59e0b;
+}
+
+.btn-neu:hover{
+    background:#d88906;
+}
+
 
 
 
@@ -249,53 +290,59 @@ text-align:left;
 <main>
 
 <div class="aufgabe">
+    <div class="art" id="txtMul">Multiplikation</div>
+    <div class="rechnung">
+        <span id="malText"></span>
+        <input class="schritt" id="mal1">
+        =
+        <input class="schritt" id="mal2">
+        =
+        <input id="mal">
+    </div>
+</div>
 
-<div class="art" id="txtAdd">Addition</div>
-
-<div class="rechnung" id="plusText"></div>
-
-<input id="plus">
-
+<div class="aufgabe">
+    <div class="art" id="txtDiv">Division</div>
+    <div class="rechnung">
+        <span id="geteiltText"></span>
+        <input class="schritt" id="geteilt1">
+        =
+        <input class="schritt" id="geteilt2">
+        =
+        <input id="geteilt">
+    </div>
 </div>
 
 
 <div class="aufgabe">
-
-<div class="art" id="txtSub">Subtraktion</div>
-
-<div class="rechnung" id="minusText"></div>
-
-<input id="minus">
-
+    <div class="art" id="txtAdd">Addition</div>
+    <div class="rechnung">
+        <span id="plusText"></span>
+        <input class="schritt" id="plus1">
+        =
+        <input class="schritt" id="plus2">
+        =
+        <input id="plus">
+    </div>
 </div>
 
 <div class="aufgabe">
-
-<div class="art" id="txtMul">Multiplikation</div>
-
-<div class="rechnung" id="malText"></div>
-
-<input id="mal">
-
+    <div class="art" id="txtSub">Subtraktion</div>
+    <div class="rechnung">
+        <span id="minusText"></span>
+        <input class="schritt" id="minus1">
+        =
+        <input class="schritt" id="minus2">
+        =
+        <input id="minus">
+    </div>
 </div>
-
-
-<div class="aufgabe">
-
-<div class="art" id="txtDiv">Division</div>
-
-<div class="rechnung" id="geteiltText"></div>
-
-<input id="geteilt">
-
-</div>
-
 
 
 <div class="toolbar">
-<button id="pruefen">✓ Prüfen</button>
-<button id="loesung">💡 Lösungen</button>
-<button id="neu">🔄 Neue Brüche</button>
+<button id="pruefen" class="btn-pruefen">✓ Prüfen</button>
+<button id="loesung" class="btn-loesung">💡 Lösung</button>
+<button id="neu" class="btn-neu">🔄 Neue Aufgaben</button>
 </div>
 
 
@@ -608,6 +655,17 @@ function leseBruch(text) {
 
     text = text.replace(/\s/g, "");
 
+    // Ganze Zahl?
+    if (!text.includes("/")) {
+
+        const z = parseInt(text);
+
+        if (isNaN(z))
+            return null;
+
+        return { z:z, n:1 };
+    }
+
     const teile = text.split("/");
 
     if (teile.length !== 2)
@@ -621,6 +679,7 @@ function leseBruch(text) {
 
     return { z, n };
 }
+
 
 // ------------------------------
 // Ergebnis vergleichen
@@ -731,23 +790,21 @@ document.getElementById("loesung").onclick = function () {
     const l3 = mul(bruch1, bruch2);
     const l4 = divi(bruch1, bruch2);
 
-    document.getElementById("plus").value =
-        l1.z + "/" + l1.n;
+    function ausgabe(b){
+        return b.n===1 ? String(b.z) : b.z+"/"+b.n;
+    }
 
-    document.getElementById("minus").value =
-        l2.z + "/" + l2.n;
+    document.getElementById("plus").value = ausgabe(l1);
+    document.getElementById("minus").value = ausgabe(l2);
+    document.getElementById("mal").value = ausgabe(l3);
+    document.getElementById("geteilt").value = ausgabe(l4);
 
-    document.getElementById("mal").value =
-        l3.z + "/" + l3.n;
-
-    document.getElementById("geteilt").value =
-        l4.z + "/" + l4.n;
-
-document.querySelectorAll("input").forEach(f=>{
-    f.style.background="#c8e6c9";
-});
+    document.querySelectorAll("input").forEach(f=>{
+        f.style.background="#c8e6c9";
+    });
 
 };
+
 
 document.getElementById("neu").onclick = function () {
 
