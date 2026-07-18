@@ -827,10 +827,61 @@ document.getElementById("loesung").onclick = function () {
         return b.n===1 ? String(b.z) : b.z+"/"+b.n;
     }
 
+    // Ergebnisse
     document.getElementById("plus").value = ausgabe(l1);
     document.getElementById("minus").value = ausgabe(l2);
     document.getElementById("mal").value = ausgabe(l3);
     document.getElementById("geteilt").value = ausgabe(l4);
+
+    // -----------------------
+    // Multiplikation
+    // -----------------------
+
+    document.getElementById("mal1").value =
+        bruch1.z+"·"+bruch2.z+" / "+bruch1.n+"·"+bruch2.n;
+
+    document.getElementById("mal2").value =
+        (bruch1.z*bruch2.z)+"/"+(bruch1.n*bruch2.n);
+
+    // -----------------------
+    // Division
+    // -----------------------
+
+    document.getElementById("geteilt1").value =
+        bruch1.z+"/"+bruch1.n+" · "+bruch2.n+"/"+bruch2.z;
+
+    document.getElementById("geteilt2").value =
+        (bruch1.z*bruch2.n)+"/"+(bruch1.n*bruch2.z);
+
+function kgV(a,b){
+    return a*b/ggt(a,b);
+}
+
+// -----------------------
+// Addition
+// -----------------------
+
+let h = kgV(bruch1.n, bruch2.n);
+
+let e1 = bruch1.z * (h / bruch1.n);
+let e2 = bruch2.z * (h / bruch2.n);
+
+document.getElementById("plus1").value =
+    e1 + "/" + h + " + " + e2 + "/" + h;
+
+document.getElementById("plus2").value =
+    (e1 + e2) + "/" + h;
+
+
+// -----------------------
+// Subtraktion
+// -----------------------
+
+document.getElementById("minus1").value =
+    e1 + "/" + h + " - " + e2 + "/" + h;
+
+document.getElementById("minus2").value =
+    (e1 - e2) + "/" + h;
 
     document.querySelectorAll("input").forEach(f=>{
         f.style.background="#c8e6c9";
