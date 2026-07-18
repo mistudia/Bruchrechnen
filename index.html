@@ -17,7 +17,7 @@ button{padding:10px 16px;border:none;border-radius:8px;background:#1e88e5;color:
 .strich{width:55px;height:2px;background:#000}
 .aufgabe{
 display:grid;
-grid-template-columns:40px auto 160px;
+grid-template-columns:130px auto 160px;
 gap:20px;
 align-items:center;
 margin:20px 0;
@@ -208,6 +208,14 @@ footer a:hover{
 text-decoration:underline;
 }
 
+.art{
+width:120px;
+font-weight:bold;
+color:#1565c0;
+font-size:18px;
+text-align:left;
+}
+
 
 
 
@@ -242,7 +250,7 @@ text-decoration:underline;
 
 <div class="aufgabe">
 
-<div>➕</div>
+<div class="art" id="txtAdd">Addition</div>
 
 <div class="rechnung" id="plusText"></div>
 
@@ -253,7 +261,7 @@ text-decoration:underline;
 
 <div class="aufgabe">
 
-<div>➖</div>
+<div class="art" id="txtSub">Subtraktion</div>
 
 <div class="rechnung" id="minusText"></div>
 
@@ -263,7 +271,7 @@ text-decoration:underline;
 
 <div class="aufgabe">
 
-<div>✖️</div>
+<div class="art" id="txtMul">Multiplikation</div>
 
 <div class="rechnung" id="malText"></div>
 
@@ -274,7 +282,7 @@ text-decoration:underline;
 
 <div class="aufgabe">
 
-<div>➗</div>
+<div class="art" id="txtDiv">Division</div>
 
 <div class="rechnung" id="geteiltText"></div>
 
@@ -327,7 +335,12 @@ loesung:"💡 Lösungen",
 neu:"🔄 Neue Brüche",
 leicht:"😊 Leicht",
 mittel:"🧠 Mittel",
-schwer:"🔥 Schwer"
+schwer:"🔥 Schwer",
+
+addition:"Addition",
+subtraktion:"Subtraktion",
+multiplikation:"Multiplikation",
+division:"Division"
 },
 
 en:{
@@ -337,7 +350,12 @@ loesung:"💡 Show answers",
 neu:"🔄 New fractions",
 leicht:"😊 Easy",
 mittel:"🧠 Medium",
-schwer:"🔥 Hard"
+schwer:"🔥 Hard",
+
+addition:"Addition",
+subtraktion:"Subtraction",
+multiplikation:"Multiplication",
+division:"Division"
 },
 
 es:{
@@ -347,7 +365,12 @@ loesung:"💡 Soluciones",
 neu:"🔄 Nuevas fracciones",
 leicht:"😊 Fácil",
 mittel:"🧠 Medio",
-schwer:"🔥 Difícil"
+schwer:"🔥 Difícil",
+
+addition:"Suma",
+subtraktion:"Resta",
+multiplikation:"Multiplicación",
+division:"División"
 }
 
 };
@@ -364,6 +387,11 @@ document.getElementById("neu").textContent=texte[s].neu;
 document.getElementById("btnLeicht").textContent=texte[s].leicht;
 document.getElementById("btnMittel").textContent=texte[s].mittel;
 document.getElementById("btnSchwer").textContent=texte[s].schwer;
+
+document.getElementById("txtAdd").textContent = texte[s].addition;
+document.getElementById("txtSub").textContent = texte[s].subtraktion;
+document.getElementById("txtMul").textContent = texte[s].multiplikation;
+document.getElementById("txtDiv").textContent = texte[s].division;
 
 }
 
@@ -557,11 +585,11 @@ bruchHTML(bruch1.z,bruch1.n)+" − "+
 bruchHTML(bruch2.z,bruch2.n)+" =";
 
 document.getElementById("malText").innerHTML =
-bruchHTML(bruch1.z,bruch1.n)+" × "+
+bruchHTML(bruch1.z,bruch1.n)+" · "+
 bruchHTML(bruch2.z,bruch2.n)+" =";
 
 document.getElementById("geteiltText").innerHTML =
-bruchHTML(bruch1.z,bruch1.n)+" ÷ "+
+bruchHTML(bruch1.z,bruch1.n)+" : "+
 bruchHTML(bruch2.z,bruch2.n)+" =";
 
 document.querySelectorAll("input").forEach(f => {
