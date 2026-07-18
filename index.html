@@ -219,19 +219,29 @@ font-size:18px;
 text-align:left;
 }
 
-.schritt{
-    width:130px;
+.schritt,
+#plus,
+#minus,
+#mal,
+#geteilt{
+    box-sizing:border-box;
+    height:48px;
     font-size:18px;
-    padding:6px;
+    padding:6px 10px;
     text-align:center;
+}
+
+.schritt{
+    width:170px;
 }
 
 #plus,
 #minus,
 #mal,
 #geteilt{
-    width:70px;
+    width:110px;
 }
+
 
 .btn-pruefen{
     background:#3367d6;
@@ -255,6 +265,27 @@ text-align:left;
 
 .btn-neu:hover{
     background:#d88906;
+}
+
+.rechnung{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+    white-space:nowrap;
+}
+
+.op{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:22px;
+    font-size:28px;
+    font-weight:bold;
+    vertical-align:middle;
+    margin:0 6px;
+    transform:translateY(+2px);
 }
 
 
@@ -294,9 +325,9 @@ text-align:left;
     <div class="rechnung">
         <span id="malText"></span>
         <input class="schritt" id="mal1">
-        =
+        <span class="op">=</span>
         <input class="schritt" id="mal2">
-        =
+        <span class="op">=</span>
         <input id="mal">
     </div>
 </div>
@@ -306,22 +337,21 @@ text-align:left;
     <div class="rechnung">
         <span id="geteiltText"></span>
         <input class="schritt" id="geteilt1">
-        =
+        <span class="op">=</span>
         <input class="schritt" id="geteilt2">
-        =
+        <span class="op">=</span>
         <input id="geteilt">
     </div>
 </div>
-
 
 <div class="aufgabe">
     <div class="art" id="txtAdd">Addition</div>
     <div class="rechnung">
         <span id="plusText"></span>
         <input class="schritt" id="plus1">
-        =
+        <span class="op">=</span>
         <input class="schritt" id="plus2">
-        =
+        <span class="op">=</span>
         <input id="plus">
     </div>
 </div>
@@ -331,13 +361,12 @@ text-align:left;
     <div class="rechnung">
         <span id="minusText"></span>
         <input class="schritt" id="minus1">
-        =
+        <span class="op">=</span>
         <input class="schritt" id="minus2">
-        =
+        <span class="op">=</span>
         <input id="minus">
     </div>
 </div>
-
 
 <div class="toolbar">
 <button id="pruefen" class="btn-pruefen">✓ Prüfen</button>
@@ -624,20 +653,24 @@ return `
 }
 
 document.getElementById("plusText").innerHTML =
-bruchHTML(bruch1.z,bruch1.n)+" + "+
-bruchHTML(bruch2.z,bruch2.n)+" =";
+    bruchHTML(bruch1.z,bruch1.n)+
+    '<span class="op">+</span>'+
+    bruchHTML(bruch2.z,bruch2.n);
 
 document.getElementById("minusText").innerHTML =
-bruchHTML(bruch1.z,bruch1.n)+" − "+
-bruchHTML(bruch2.z,bruch2.n)+" =";
+    bruchHTML(bruch1.z,bruch1.n)+
+    '<span class="op">−</span>'+
+    bruchHTML(bruch2.z,bruch2.n);
 
 document.getElementById("malText").innerHTML =
-bruchHTML(bruch1.z,bruch1.n)+" · "+
-bruchHTML(bruch2.z,bruch2.n)+" =";
+    bruchHTML(bruch1.z,bruch1.n)+
+    '<span class="op">·</span>'+
+    bruchHTML(bruch2.z,bruch2.n);
 
 document.getElementById("geteiltText").innerHTML =
-bruchHTML(bruch1.z,bruch1.n)+" : "+
-bruchHTML(bruch2.z,bruch2.n)+" =";
+    bruchHTML(bruch1.z,bruch1.n)+
+    '<span class="op">:</span>'+
+    bruchHTML(bruch2.z,bruch2.n);
 
 document.querySelectorAll("input").forEach(f => {
     f.value = "";
