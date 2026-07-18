@@ -324,6 +324,7 @@ text-align:left;
     <div class="art" id="txtMul">Multiplikation</div>
     <div class="rechnung">
         <span id="malText"></span>
+        <span class="op">=</span>
         <input class="schritt" id="mal1">
         <span class="op">=</span>
         <input class="schritt" id="mal2">
@@ -336,6 +337,7 @@ text-align:left;
     <div class="art" id="txtDiv">Division</div>
     <div class="rechnung">
         <span id="geteiltText"></span>
+        <span class="op">=</span>
         <input class="schritt" id="geteilt1">
         <span class="op">=</span>
         <input class="schritt" id="geteilt2">
@@ -348,6 +350,7 @@ text-align:left;
     <div class="art" id="txtAdd">Addition</div>
     <div class="rechnung">
         <span id="plusText"></span>
+        <span class="op">=</span>
         <input class="schritt" id="plus1">
         <span class="op">=</span>
         <input class="schritt" id="plus2">
@@ -360,6 +363,7 @@ text-align:left;
     <div class="art" id="txtSub">Subtraktion</div>
     <div class="rechnung">
         <span id="minusText"></span>
+        <span class="op">=</span>
         <input class="schritt" id="minus1">
         <span class="op">=</span>
         <input class="schritt" id="minus2">
@@ -368,14 +372,13 @@ text-align:left;
     </div>
 </div>
 
+
 <div class="toolbar">
 <button id="pruefen" class="btn-pruefen">✓ Prüfen</button>
 <button id="loesung" class="btn-loesung">💡 Lösung</button>
 <button id="neu" class="btn-neu">🔄 Neue Aufgaben</button>
 </div>
 
-
-<div id="elefant">🐘</div>
 
 <div id="konfetti"></div>
 
@@ -580,42 +583,69 @@ const schwer = [
 let bruch1;
 let bruch2;
 
+function konfettiAusRuessel(){
+
+    const elefant=document.getElementById("jubelElefant");
+    const rect=elefant.getBoundingClientRect();
+
+    const startX=rect.left+20;
+    const startY=rect.top+70;
+
+    for(let i=0;i<40;i++){
+
+        const k=document.createElement("div");
+
+        k.style.position="fixed";
+        k.style.left=startX+"px";
+        k.style.top=startY+"px";
+
+        k.style.width="8px";
+        k.style.height="8px";
+        k.style.borderRadius="50%";
+        k.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        k.style.zIndex="10001";
+
+        document.body.appendChild(k);
+
+        const x=-(120+Math.random()*260);
+        const y=Math.random()*180-90;
+
+        k.animate([
+            {
+                transform:"translate(0,0)",
+                opacity:1
+            },
+            {
+                transform:`translate(${x}px,${y}px)`,
+                opacity:0
+            }
+        ],{
+            duration:1200+Math.random()*500,
+            easing:"ease-out"
+        });
+
+        setTimeout(()=>k.remove(),1700);
+    }
+}
+
 function jubel(){
 
-const elefant=document.getElementById("elefant");
-elefant.style.display="block";
+    const elefant=document.getElementById("jubelElefant");
 
-const farben=[
-"#e53935",
-"#43a047",
-"#1e88e5",
-"#fdd835",
-"#8e24aa",
-"#fb8c00"
-];
+    elefant.style.display="block";
 
-for(let i=0;i<120;i++){
+    const interval=setInterval(konfettiAusRuessel,300);
 
-const k=document.createElement("div");
-k.className="konfetti";
+    setTimeout(()=>{
 
-k.style.left=Math.random()*100+"vw";
-k.style.background=farben[Math.floor(Math.random()*farben.length)];
-k.style.animationDelay=Math.random()+"s";
+        clearInterval(interval);
 
-document.body.appendChild(k);
+        elefant.style.display="none";
 
-setTimeout(()=>k.remove(),4000);
+    },4000);
 
 }
 
-setTimeout(()=>{
-
-elefant.style.display="none";
-
-},3500);
-
-}
 
 function neueBrueche() {
 
@@ -642,6 +672,10 @@ function neueBrueche() {
         n:p.n2
     };
 
+// Für Subtraktion meist negatives Ergebnis erzeugen
+if (bruch1.z * bruch2.n > bruch2.z * bruch1.n) {
+    [bruch1, bruch2] = [bruch2, bruch1];
+}
 
  function bruchHTML(z,n){
 return `
@@ -677,6 +711,8 @@ document.querySelectorAll("input").forEach(f => {
     f.style.background = "white";
     f.style.color = "black";
 });
+
+loesungSichtbar=false;
 
 }
 
@@ -816,7 +852,26 @@ jubel();
 
 };
 
+let loesungSichtbar = false;
+
 document.getElementById("loesung").onclick = function () {
+
+    if(loesungSichtbar){
+
+        document.querySelectorAll(".schritt").forEach(f=>f.value="");
+
+        ["plus","minus","mal","geteilt"].forEach(id=>{
+            document.getElementById(id).value="";
+        });
+
+        document.querySelectorAll("input").forEach(f=>{
+            f.style.background="white";
+            f.style.color="black";
+        });
+
+        loesungSichtbar=false;
+        return;
+    }
 
     const l1 = add(bruch1, bruch2);
     const l2 = sub(bruch1, bruch2);
@@ -887,6 +942,8 @@ document.getElementById("minus2").value =
         f.style.background="#c8e6c9";
     });
 
+loesungSichtbar = true;
+
 };
 
 
@@ -900,5 +957,21 @@ neueBrueche();
 
 
 </script>
+
+<img
+    id="jubelElefant"
+    src="elefant.png"
+    alt="Jubel-Elefant"
+    style="
+        display:none;
+        position:fixed;
+        right:25px;
+        bottom:25px;
+        width:180px;
+        z-index:10000;
+        pointer-events:none;
+    ">
+
+
 </body>
 </html>
