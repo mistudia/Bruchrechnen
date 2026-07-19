@@ -288,6 +288,78 @@ text-align:left;
     transform:translateY(+2px);
 }
 
+#pizzaModal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:20000;
+}
+
+#pizzaFenster{
+    background:white;
+    width:min(1000px,92%);
+    max-height:90vh;
+    overflow:auto;
+    margin:40px auto;
+    border-radius:16px;
+    padding:25px;
+    position:relative;
+}
+
+#pizzaSchliessen{
+    position:absolute;
+    right:15px;
+    top:15px;
+    width:40px;
+    height:40px;
+}
+
+#pizzaInhalt{
+    display:flex;
+    flex-direction:column;
+    gap:35px;
+    margin-top:20px;
+}
+
+
+.pizzaZeile{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+    margin:20px 0 35px;
+}
+
+.pfeil{
+    font-size:26px;
+    font-weight:bold;
+    color:#1976d2;
+}
+
+.pizzaKarte{
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:8px;
+    background:#fafafa;
+    text-align:center;
+    width:130px;
+    flex:0 0 130px;
+}
+
+.pizzaSVG{
+    width:100px;
+    height:100px;
+}
+
+
+.pizzaKarte div:first-child{
+    font-weight:bold;
+    margin-bottom:6px;
+    font-size:14px;
+}
+
+
 
 
 
@@ -376,6 +448,7 @@ text-align:left;
 <div class="toolbar">
 <button id="pruefen" class="btn-pruefen">✓ Prüfen</button>
 <button id="loesung" class="btn-loesung">💡 Lösung</button>
+<button id="pizza" class="btn-loesung">🍕 Pizza</button>
 <button id="neu" class="btn-neu">🔄 Neue Aufgaben</button>
 </div>
 
@@ -400,6 +473,19 @@ mistudia.com
 
 </footer>
 
+<div id="pizzaModal">
+
+    <div id="pizzaFenster">
+
+        <button id="pizzaSchliessen">✖</button>
+
+        <h2>🍕 Pizzadarstellung</h2>
+
+        <div id="pizzaInhalt"></div>
+
+    </div>
+
+</div>
 
 <script>
 document.getElementById("jahr").textContent=new Date().getFullYear();
@@ -955,6 +1041,207 @@ document.getElementById("neu").onclick = function () {
 
 neueBrueche();
 
+function pizzaSVG(zaehler, nenner){
+
+    const r = 80;
+    const cx = 90;
+    const cy = 90;
+
+    let svg = `
+<svg class="pizzaSVG" viewBox="0 0 180 180">
+
+<circle cx="${cx}" cy="${cy}" r="${r}"
+fill="#f7d774"
+stroke="#8d5a00"
+stroke-width="3"/>
+`;
+
+    for(let i=0;i<nenner;i++){
+
+        const a1 = -Math.PI/2 + i*2*Math.PI/nenner;
+        const a2 = -Math.PI/2 + (i+1)*2*Math.PI/nenner;
+
+        const x1 = cx + r*Math.cos(a1);
+        const y1 = cy + r*Math.sin(a1);
+
+        const x2 = cx + r*Math.cos(a2);
+        const y2 = cy + r*Math.sin(a2);
+
+        const gross = (a2-a1)>Math.PI ? 1 : 0;
+
+        if(i<zaehler){
+
+            svg += `
+<path
+d="M ${cx} ${cy}
+L ${x1} ${y1}
+A ${r} ${r} 0 ${gross} 1 ${x2} ${y2}
+Z"
+fill="#e53935"
+stroke="#8d5a00"
+stroke-width="2"/>
+`;
+
+        }
+
+        svg += `
+<line
+x1="${cx}"
+y1="${cy}"
+x2="${x1}"
+y2="${y1}"
+stroke="#8d5a00"
+stroke-width="2"/>
+`;
+
+    }
+
+    svg += `
+<text
+x="90"
+y="172"
+font-size="22"
+text-anchor="middle"
+font-weight="bold">
+${zaehler}/${nenner}
+</text>
+
+</svg>`;
+
+    return svg;
+
+}
+
+function pizzaBlock(titel,z,n){
+
+    return `
+    <div class="pizzaKarte">
+
+        <div style="
+            font-weight:bold;
+            margin-bottom:10px;
+        ">
+            ${titel}
+        </div>
+
+        ${pizzaSVG(z,n)}
+
+    </div>`;
+}
+
+function pizzaZeile(...elemente){
+
+    return `
+        <div class="pizzaZeile">
+            ${elemente.join('<div class="pfeil">➜</div>')}
+        </div>
+    `;
+}
+
+document.getElementById("pizza").onclick=function(){
+
+    const plus=add(bruch1,bruch2);
+    const minus=sub(bruch1,bruch2);
+    const mal=mul(bruch1,bruch2);
+    const geteilt=divi(bruch1,bruch2);
+
+    let html="";
+
+ const h = bruch1.n*bruch2.n/ggt(bruch1.n,bruch2.n);
+
+const e1 = bruch1.z*(h/bruch1.n);
+const e2 = bruch2.z*(h/bruch2.n);
+
+html+="<h2>➕ Addition</h2>";
+
+html+=pizzaZeile(
+
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
+
+    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
+
+    pizzaBlock("1. gleichnamig",e1,h),
+
+    pizzaBlock("2. gleichnamig",e2,h),
+
+    pizzaBlock("Ergebnis",plus.z,plus.n)
+
+);
+
+
+    html+="<hr>";
+
+html+="<hr>";
+
+html+="<h2>➖ Subtraktion</h2>";
+
+html+=pizzaZeile(
+
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
+
+    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
+
+    pizzaBlock("1. gleichnamig",e1,h),
+
+    pizzaBlock("2. gleichnamig",e2,h),
+
+    pizzaBlock("Ergebnis",minus.z,minus.n)
+
+);
+
+
+    html+="<hr>";
+
+
+html+="<h2>✖ Multiplikation</h2>";
+
+html+=pizzaZeile(
+
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
+
+    pizzaBlock("Produkt",bruch1.z*bruch2.z,bruch1.n*bruch2.n),
+
+    pizzaBlock("gekürzt",mal.z,mal.n)
+
+);
+
+
+    html+="<hr>";
+
+html+="<h2>➗ Division</h2>";
+
+html+=pizzaZeile(
+
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
+
+    pizzaBlock("Kehrwert",bruch2.n,bruch2.z),
+
+    pizzaBlock("Ergebnis",geteilt.z,geteilt.n)
+
+);
+
+
+    document.getElementById("pizzaInhalt").innerHTML=html;
+
+    document.getElementById("pizzaModal").style.display="block";
+
+};
+
+
+
+document.getElementById("pizzaSchliessen").onclick=function(){
+
+    document.getElementById("pizzaModal").style.display="none";
+
+};
+
+document.getElementById("pizzaModal").onclick=function(e){
+
+    if(e.target===this)
+        this.style.display="none";
+
+};
+
 
 </script>
 
@@ -971,6 +1258,7 @@ neueBrueche();
         z-index:10000;
         pointer-events:none;
     ">
+
 
 
 </body>
