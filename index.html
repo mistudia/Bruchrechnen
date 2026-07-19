@@ -318,20 +318,20 @@ text-align:left;
 #pizzaInhalt{
     display:flex;
     flex-direction:column;
-    gap:35px;
-    margin-top:20px;
+    gap:12px;
+    margin-top:12px;
 }
 
 
 .pizzaZeile{
     display:flex;
     align-items:center;
-    gap:18px;
-    flex-wrap:wrap;
-    margin:20px 0 35px;
+    gap:14px;
+    flex-wrap:nowrap;
+    margin:8px 0 12px;
 }
 
-.pfeil{
+.trenner{
     font-size:26px;
     font-weight:bold;
     color:#1976d2;
@@ -357,6 +357,10 @@ text-align:left;
     font-weight:bold;
     margin-bottom:6px;
     font-size:14px;
+}
+
+#pizzaInhalt h2{
+    margin:10px 0 6px;
 }
 
 
@@ -1050,10 +1054,13 @@ function pizzaSVG(zaehler, nenner){
     let svg = `
 <svg class="pizzaSVG" viewBox="0 0 180 180">
 
-<circle cx="${cx}" cy="${cy}" r="${r}"
-fill="#f7d774"
-stroke="#8d5a00"
-stroke-width="3"/>
+<circle
+cx="${cx}"
+cy="${cy}"
+r="${r}"
+fill="white"
+stroke="#444"
+stroke-width="2"/>
 `;
 
     for(let i=0;i<nenner;i++){
@@ -1078,7 +1085,7 @@ L ${x1} ${y1}
 A ${r} ${r} 0 ${gross} 1 ${x2} ${y2}
 Z"
 fill="#e53935"
-stroke="#8d5a00"
+stroke="#444"
 stroke-width="2"/>
 `;
 
@@ -1090,7 +1097,7 @@ x1="${cx}"
 y1="${cy}"
 x2="${x1}"
 y2="${y1}"
-stroke="#8d5a00"
+stroke="#444"
 stroke-width="2"/>
 `;
 
@@ -1129,14 +1136,24 @@ function pizzaBlock(titel,z,n){
     </div>`;
 }
 
-function pizzaZeile(...elemente){
+function pizzaZeile(elemente, zeichen){
 
-    return `
-        <div class="pizzaZeile">
-            ${elemente.join('<div class="pfeil">➜</div>')}
-        </div>
-    `;
+    let html = `<div class="pizzaZeile">`;
+
+    for(let i=0;i<elemente.length;i++){
+
+        html += elemente[i];
+
+        if(i < zeichen.length){
+            html += `<div class="trenner">${zeichen[i]}</div>`;
+        }
+    }
+
+    html += `</div>`;
+
+    return html;
 }
+
 
 document.getElementById("pizza").onclick=function(){
 
@@ -1154,18 +1171,15 @@ const e2 = bruch2.z*(h/bruch2.n);
 
 html+="<h2>➕ Addition</h2>";
 
-html+=pizzaZeile(
-
+html += pizzaZeile(
+[
     pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-
     pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-
     pizzaBlock("1. gleichnamig",e1,h),
-
     pizzaBlock("2. gleichnamig",e2,h),
-
     pizzaBlock("Ergebnis",plus.z,plus.n)
-
+],
+["+", "=", "+", "="]
 );
 
 
@@ -1175,18 +1189,15 @@ html+="<hr>";
 
 html+="<h2>➖ Subtraktion</h2>";
 
-html+=pizzaZeile(
-
+html += pizzaZeile(
+[
     pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-
     pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-
     pizzaBlock("1. gleichnamig",e1,h),
-
     pizzaBlock("2. gleichnamig",e2,h),
-
     pizzaBlock("Ergebnis",minus.z,minus.n)
-
+],
+["−", "=", "−", "="]
 );
 
 
@@ -1195,14 +1206,14 @@ html+=pizzaZeile(
 
 html+="<h2>✖ Multiplikation</h2>";
 
-html+=pizzaZeile(
-
+html += pizzaZeile(
+[
     pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-
+    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
     pizzaBlock("Produkt",bruch1.z*bruch2.z,bruch1.n*bruch2.n),
-
     pizzaBlock("gekürzt",mal.z,mal.n)
-
+],
+["·", "=", "="]
 );
 
 
@@ -1210,14 +1221,14 @@ html+=pizzaZeile(
 
 html+="<h2>➗ Division</h2>";
 
-html+=pizzaZeile(
-
+html += pizzaZeile(
+[
     pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-
+    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
     pizzaBlock("Kehrwert",bruch2.n,bruch2.z),
-
     pizzaBlock("Ergebnis",geteilt.z,geteilt.n)
-
+],
+[":", "=", "="]
 );
 
 
