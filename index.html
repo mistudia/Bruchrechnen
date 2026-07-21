@@ -1049,12 +1049,33 @@ neueBrueche();
 
 function pizzaSVG(zaehler, nenner){
 
+    const negativ = zaehler < 0;
+    zaehler = Math.abs(zaehler);
+
     const r = 80;
     const cx = 90;
     const cy = 90;
 
     let svg = `
 <svg class="pizzaSVG" viewBox="0 0 180 180">
+
+<defs>
+
+<pattern id="schraffur"
+         patternUnits="userSpaceOnUse"
+         width="6"
+         height="6">
+
+    <rect width="6" height="6" fill="white"/>
+
+    <path
+        d="M0,6 L6,0"
+        stroke="#000"
+        stroke-width="1.3"/>
+
+</pattern>
+
+</defs>
 
 <circle
 cx="${cx}"
@@ -1064,6 +1085,9 @@ fill="white"
 stroke="#444"
 stroke-width="2"/>
 `;
+
+    const mehrfach = Math.floor(zaehler / nenner);
+    const rest = zaehler % nenner;
 
     for(let i=0;i<nenner;i++){
 
@@ -1078,7 +1102,24 @@ stroke-width="2"/>
 
         const gross = (a2-a1)>Math.PI ? 1 : 0;
 
-        if(i<zaehler){
+        let fuellung = mehrfach;
+        if(i < rest) fuellung++;
+
+        if(fuellung > 0){
+
+            let fill;
+
+            if(negativ){
+
+                fill = "url(#schraffur)";
+
+            }else{
+
+                if(fuellung==1) fill="#ff6b6b";      // hellrot
+                if(fuellung==2) fill="#d32f2f";      // kräftig rot
+                if(fuellung>=3) fill="#7f0000";      // dunkelrot
+
+            }
 
             svg += `
 <path
@@ -1086,11 +1127,10 @@ d="M ${cx} ${cy}
 L ${x1} ${y1}
 A ${r} ${r} 0 ${gross} 1 ${x2} ${y2}
 Z"
-fill="#e53935"
+fill="${fill}"
 stroke="#444"
 stroke-width="2"/>
 `;
-
         }
 
         svg += `
@@ -1106,12 +1146,9 @@ stroke-width="2"/>
     }
 
     svg += `
-
-
 </svg>`;
 
     return svg;
-
 }
 
 function pizzaBlock(titel,z,n){
