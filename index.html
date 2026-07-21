@@ -326,41 +326,43 @@ text-align:left;
 .pizzaZeile{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:10px;
     flex-wrap:nowrap;
     margin:8px 0 12px;
 }
 
 .trenner{
-    font-size:26px;
+    font-size:22px;
     font-weight:bold;
     color:#1976d2;
+    margin:0 2px;
+
 }
 
 .pizzaKarte{
     border:1px solid #ddd;
     border-radius:12px;
-    padding:8px;
+    padding:6px;
     background:#fafafa;
     text-align:center;
-    width:130px;
-    flex:0 0 130px;
+    width:110px;
+    flex:0 0 110px;
 }
 
 .pizzaSVG{
-    width:100px;
-    height:100px;
+    width:85px;
+    height:85px;
 }
 
 
 .pizzaKarte div:first-child{
     font-weight:bold;
-    margin-bottom:6px;
-    font-size:14px;
+    margin-bottom:4px;
+    font-size:13px;
 }
 
 #pizzaInhalt h2{
-    margin:10px 0 6px;
+    margin:8px 0 6px;
 }
 
 
@@ -1104,14 +1106,7 @@ stroke-width="2"/>
     }
 
     svg += `
-<text
-x="90"
-y="172"
-font-size="22"
-text-anchor="middle"
-font-weight="bold">
-${zaehler}/${nenner}
-</text>
+
 
 </svg>`;
 
@@ -1126,12 +1121,21 @@ function pizzaBlock(titel,z,n){
 
         <div style="
             font-weight:bold;
-            margin-bottom:10px;
+            font-size:18px;
+            margin-bottom:4px;
         ">
-            ${titel}
+            ${z}/${n}
         </div>
 
         ${pizzaSVG(z,n)}
+
+        <div style="
+            margin-top:4px;
+            font-size:13px;
+            font-weight:bold;
+        ">
+            ${titel}
+        </div>
 
     </div>`;
 }
@@ -1169,6 +1173,33 @@ document.getElementById("pizza").onclick=function(){
 const e1 = bruch1.z*(h/bruch1.n);
 const e2 = bruch2.z*(h/bruch2.n);
 
+
+html+="<h2>✖ Multiplikation</h2>";
+
+html += pizzaZeile(
+[
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
+    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
+    pizzaBlock("Produkt",bruch1.z*bruch2.z,bruch1.n*bruch2.n),
+    pizzaBlock("gekürzt",mal.z,mal.n)
+],
+["·", "=", "="]
+);
+
+html+="<h2>➗ Division</h2>";
+
+html += pizzaZeile(
+[
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
+    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
+    pizzaBlock("Kehrwert",bruch2.n,bruch2.z),
+    pizzaBlock("Ergebnis",geteilt.z,geteilt.n)
+],
+[":", "=", "="]
+);
+
+
+
 html+="<h2>➕ Addition</h2>";
 
 html += pizzaZeile(
@@ -1181,11 +1212,6 @@ html += pizzaZeile(
 ],
 ["+", "=", "+", "="]
 );
-
-
-    html+="<hr>";
-
-html+="<hr>";
 
 html+="<h2>➖ Subtraktion</h2>";
 
@@ -1200,36 +1226,6 @@ html += pizzaZeile(
 ["−", "=", "−", "="]
 );
 
-
-    html+="<hr>";
-
-
-html+="<h2>✖ Multiplikation</h2>";
-
-html += pizzaZeile(
-[
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-    pizzaBlock("Produkt",bruch1.z*bruch2.z,bruch1.n*bruch2.n),
-    pizzaBlock("gekürzt",mal.z,mal.n)
-],
-["·", "=", "="]
-);
-
-
-    html+="<hr>";
-
-html+="<h2>➗ Division</h2>";
-
-html += pizzaZeile(
-[
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-    pizzaBlock("Kehrwert",bruch2.n,bruch2.z),
-    pizzaBlock("Ergebnis",geteilt.z,geteilt.n)
-],
-[":", "=", "="]
-);
 
 
     document.getElementById("pizzaInhalt").innerHTML=html;
