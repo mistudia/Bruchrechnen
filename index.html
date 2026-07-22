@@ -1089,6 +1089,40 @@ stroke-width="2"/>
     const mehrfach = Math.floor(zaehler / nenner);
     const rest = zaehler % nenner;
 
+
+// Spezialfall: ganze Pizza (z.B. 1/1, 2/2, 3/3 ...)
+if(nenner == 1){
+
+    let fuellung = mehrfach + rest;
+
+    let fill;
+
+    if(negativ){
+
+        fill = "url(#schraffur)";
+
+    }else{
+
+        if(fuellung==1) fill="#ff6b6b";
+        else if(fuellung==2) fill="#d32f2f";
+        else fill="#7f0000";
+
+    }
+
+    svg += `
+<circle
+cx="${cx}"
+cy="${cy}"
+r="${r}"
+fill="${fill}"
+stroke="#444"
+stroke-width="2"/>
+</svg>`;
+
+    return svg;
+}
+
+
     for(let i=0;i<nenner;i++){
 
         const a1 = -Math.PI/2 + i*2*Math.PI/nenner;
@@ -1229,12 +1263,13 @@ html += pizzaZeile(
 [
     pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
     pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
+    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
     pizzaBlock("Kehrwert",bruch2.n,bruch2.z),
-    pizzaBlock("Ergebnis",geteilt.z,geteilt.n)
+    pizzaBlock("Quotient",bruch1.z*bruch2.n,bruch1.n*bruch2.z),
+    pizzaBlock("gekürzt",geteilt.z,geteilt.n)
 ],
-[":", "=", "="]
+[":", "=", "·", "=", "="]
 );
-
 
 
 html+="<h2>➕ Addition</h2>";
@@ -1245,10 +1280,12 @@ html += pizzaZeile(
     pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
     pizzaBlock("1. gleichnamig",e1,h),
     pizzaBlock("2. gleichnamig",e2,h),
-    pizzaBlock("Ergebnis",plus.z,plus.n)
+    pizzaBlock("Summe",e1+e2,h),
+    pizzaBlock("gekürzt",plus.z,plus.n)
 ],
-["+", "=", "+", "="]
+["+", "=", "+", "=", "="]
 );
+
 
 html+="<h2>➖ Subtraktion</h2>";
 
@@ -1258,9 +1295,10 @@ html += pizzaZeile(
     pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
     pizzaBlock("1. gleichnamig",e1,h),
     pizzaBlock("2. gleichnamig",e2,h),
-    pizzaBlock("Ergebnis",minus.z,minus.n)
+    pizzaBlock("Differenz",e1-e2,h),
+    pizzaBlock("gekürzt",minus.z,minus.n)
 ],
-["−", "=", "−", "="]
+["−", "=", "−", "=", "="]
 );
 
 
