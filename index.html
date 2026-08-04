@@ -111,6 +111,33 @@ button:active{
 transform:scale(.98);
 }
 
+.lang-btn{
+background:#1976d2;
+border:3px solid transparent;
+border-radius:10px;
+padding:8px 16px;
+font-size:24px;
+line-height:1;
+cursor:pointer;
+transition:.2s;
+box-shadow:0 4px 10px rgba(0,0,0,.18);
+}
+
+.lang-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(0,0,0,.25);
+}
+
+.stufe-btn{
+border:3px solid transparent;
+}
+
+.lang-btn.active,
+.stufe-btn.active{
+border-color:#ffd54f;
+background:#1565c0;
+}
+
 input{
 font-size:22px;
 padding:10px;
@@ -243,6 +270,44 @@ text-align:left;
 }
 
 
+.toolbar-aktionen{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    margin:12px 0;
+}
+
+.toolbar-links{
+    justify-self:start;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.toolbar-mitte{
+    justify-self:center;
+}
+
+.toolbar-rechts{
+    justify-self:end;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+@media (max-width:560px){
+    .toolbar-aktionen{
+        grid-template-columns:1fr;
+        justify-items:center;
+    }
+    .toolbar-links,
+    .toolbar-mitte,
+    .toolbar-rechts{
+        justify-self:center;
+    }
+}
+
 .btn-pruefen{
     background:#3367d6;
 }
@@ -252,11 +317,17 @@ text-align:left;
 }
 
 .btn-loesung{
-    background:#1ea64b;
+    background:transparent;
+    color:#1ea64b;
+    border:2px solid #1ea64b;
+    box-shadow:none;
 }
 
 .btn-loesung:hover{
-    background:#198c3f;
+    background:#eafaf0;
+    color:#198c3f;
+    border-color:#198c3f;
+    transform:translateY(-2px);
 }
 
 .btn-neu{
@@ -339,12 +410,60 @@ text-align:left;
 }
 
 .trenner{
-    font-size:22px;
+    font-size:30px;
     font-weight:bold;
     color:#1976d2;
-    margin:0 2px;
+    margin:0 4px;
 
 }
+
+.trenner-eq{
+    color:#000;
+}
+
+.trenner-hl-gelb{
+    color:#fff;
+    background:#f5c518;
+    border-radius:8px;
+    padding:2px 10px;
+}
+
+.trenner-hl-gruen{
+    color:#fff;
+    background:#43a047;
+    border-radius:8px;
+    padding:2px 10px;
+}
+
+.trenner-hl-blau{
+    color:#fff;
+    background:#1565c0;
+    border-radius:8px;
+    padding:2px 10px;
+}
+
+.trenner-hl-lila{
+    color:#fff;
+    background:#8e24aa;
+    border-radius:8px;
+    padding:2px 10px;
+}
+
+.pz-h-mul,
+.pz-h-div,
+.pz-h-add,
+.pz-h-sub{
+    color:#fff;
+    display:inline-block;
+    align-self:center;
+    padding:6px 20px;
+    border-radius:10px;
+}
+
+.pz-h-mul{ background:#43a047; }
+.pz-h-div{ background:#1565c0; }
+.pz-h-add{ background:#f5c518; }
+.pz-h-sub{ background:#8e24aa; }
 
 .pizzaKarte{
     border:1px solid #ddd;
@@ -354,6 +473,40 @@ text-align:left;
     text-align:center;
     width:110px;
     flex:0 0 110px;
+}
+
+.pizzaKarte-blau{
+    border:2px solid #1565c0;
+    background:#e3f2fd;
+}
+
+.pizzaKarte-gruen{
+    border:2px solid #43a047;
+    background:#e8f5e9;
+}
+
+.nenner-1{
+    color:#fff;
+    background:#00acc1;
+    display:inline-block;
+    padding:0 8px;
+    border-radius:6px;
+}
+
+.nenner-2{
+    color:#fff;
+    background:#e53935;
+    display:inline-block;
+    padding:0 8px;
+    border-radius:6px;
+}
+
+.nenner-3{
+    color:#fff;
+    background:#3949ab;
+    display:inline-block;
+    padding:0 8px;
+    border-radius:6px;
 }
 
 .pizzaSVG{
@@ -368,8 +521,18 @@ text-align:left;
     font-size:13px;
 }
 
+#pizzaFenster h2{
+    text-align:center;
+}
+
 #pizzaInhalt h2{
     margin:8px 0 6px;
+}
+
+.pizzaTrenner{
+    border:none;
+    border-top:1px solid #e2e2e2;
+    margin:18px 0;
 }
 
 
@@ -389,16 +552,17 @@ text-align:left;
 <h1 id="titel">Bruchrechnen</h1>
 
 <div class="toolbar">
-<button onclick="sprache('de')">🇩🇪</button>
-<button onclick="sprache('en')">🇺🇸</button>
-<button onclick="sprache('es')">🇪🇸</button>
+<button id="btnDe" class="lang-btn active" onclick="sprache('de')">🇩🇪</button>
+<button id="btnEn" class="lang-btn" onclick="sprache('en')">🇺🇸</button>
+<button id="btnEs" class="lang-btn" onclick="sprache('es')">🇪🇸</button>
+<button id="btnZh" class="lang-btn" onclick="sprache('zh')">🇨🇳</button>
 </div>
 <div class="toolbar">
-<button id="btnLeicht" onclick="stufe='leicht'; neueBrueche();">😊 Leicht</button>
+<button id="btnLeicht" class="stufe-btn active" onclick="stufe='leicht'; stufeAktiv('leicht'); neueBrueche();">😊 Leicht</button>
 
-<button id="btnMittel" onclick="stufe='mittel'; neueBrueche();">🧠 Mittel</button>
+<button id="btnMittel" class="stufe-btn" onclick="stufe='mittel'; stufeAktiv('mittel'); neueBrueche();">🧠 Mittel</button>
 
-<button id="btnSchwer" onclick="stufe='schwer'; neueBrueche();">🔥 Schwer</button>
+<button id="btnSchwer" class="stufe-btn" onclick="stufe='schwer'; stufeAktiv('schwer'); neueBrueche();">🔥 Schwer</button>
 </div>
 
 </header>
@@ -458,11 +622,17 @@ text-align:left;
 </div>
 
 
-<div class="toolbar">
-<button id="pruefen" class="btn-pruefen">✓ Prüfen</button>
+<div class="toolbar toolbar-aktionen">
+<div class="toolbar-links">
 <button id="loesung" class="btn-loesung">💡 Lösung</button>
+</div>
+<div class="toolbar-mitte">
+<button id="pruefen" class="btn-pruefen">✓ Prüfen</button>
+</div>
+<div class="toolbar-rechts">
 <button id="pizza" class="btn-loesung">🍕 Pizza</button>
 <button id="neu" class="btn-neu">🔄 Neue Aufgaben</button>
+</div>
 </div>
 
 
@@ -492,9 +662,13 @@ mistudia.com
 
         <button id="pizzaSchliessen">✖</button>
 
-        <h2>🍕 Pizzadarstellung</h2>
+        <h2 id="pizzaTitel">🍕 Pizzadarstellung</h2>
 
         <div id="pizzaInhalt"></div>
+
+        <div style="text-align:center;margin-top:20px;">
+            <button id="pizzaSchliessenUnten" class="btn-loesung">✖ Schließen</button>
+        </div>
 
     </div>
 
@@ -503,6 +677,7 @@ mistudia.com
 <script>
 document.getElementById("jahr").textContent=new Date().getFullYear();
 let stufe="leicht";
+let aktivSprache="de";
 
 const texte={
 
@@ -518,7 +693,27 @@ schwer:"🔥 Schwer",
 addition:"Addition",
 subtraktion:"Subtraktion",
 multiplikation:"Multiplikation",
-division:"Division"
+division:"Division",
+
+pizzaBtn:"🍕 Pizza",
+pizzaTitel:"🍕 Pizzadarstellung",
+pizzaSchliessen:"✖ Schließen",
+pz:{
+mul:"Multiplikation",
+div:"Division",
+add:"Addition",
+sub:"Subtraktion",
+bruch1:"1. Bruch",
+bruch2:"2. Bruch",
+produkt:"Produkt",
+gekuerzt:"gekürzt",
+kehrwert:"Kehrwert",
+quotient:"Quotient",
+gleich1:"1. gleichnamig",
+gleich2:"2. gleichnamig",
+summe:"Summe",
+differenz:"Differenz"
+}
 },
 
 en:{
@@ -533,7 +728,27 @@ schwer:"🔥 Hard",
 addition:"Addition",
 subtraktion:"Subtraction",
 multiplikation:"Multiplication",
-division:"Division"
+division:"Division",
+
+pizzaBtn:"🍕 Pizza",
+pizzaTitel:"🍕 Pizza view",
+pizzaSchliessen:"✖ Close",
+pz:{
+mul:"Multiplication",
+div:"Division",
+add:"Addition",
+sub:"Subtraction",
+bruch1:"1st fraction",
+bruch2:"2nd fraction",
+produkt:"Product",
+gekuerzt:"reduced",
+kehrwert:"Reciprocal",
+quotient:"Quotient",
+gleich1:"1st common denominator",
+gleich2:"2nd common denominator",
+summe:"Sum",
+differenz:"Difference"
+}
 },
 
 es:{
@@ -548,7 +763,62 @@ schwer:"🔥 Difícil",
 addition:"Suma",
 subtraktion:"Resta",
 multiplikation:"Multiplicación",
-division:"División"
+division:"División",
+
+pizzaBtn:"🍕 Pizza",
+pizzaTitel:"🍕 Representación en pizza",
+pizzaSchliessen:"✖ Cerrar",
+pz:{
+mul:"Multiplicación",
+div:"División",
+add:"Suma",
+sub:"Resta",
+bruch1:"1.ª fracción",
+bruch2:"2.ª fracción",
+produkt:"Producto",
+gekuerzt:"simplificado",
+kehrwert:"Inverso",
+quotient:"Cociente",
+gleich1:"1.º común denominador",
+gleich2:"2.º común denominador",
+summe:"Suma",
+differenz:"Diferencia"
+}
+},
+
+zh:{
+titel:"分数运算",
+pruefen:"✓ 检查",
+loesung:"💡 显示答案",
+neu:"🔄 新的分数",
+leicht:"😊 简单",
+mittel:"🧠 中等",
+schwer:"🔥 困难",
+
+addition:"加法",
+subtraktion:"减法",
+multiplikation:"乘法",
+division:"除法",
+
+pizzaBtn:"🍕 披萨",
+pizzaTitel:"🍕 披萨图示",
+pizzaSchliessen:"✖ 关闭",
+pz:{
+mul:"乘法",
+div:"除法",
+add:"加法",
+sub:"减法",
+bruch1:"第1个分数",
+bruch2:"第2个分数",
+produkt:"积",
+gekuerzt:"约分后",
+kehrwert:"倒数",
+quotient:"商",
+gleich1:"第1个通分",
+gleich2:"第2个通分",
+summe:"和",
+differenz:"差"
+}
 }
 
 };
@@ -556,7 +826,17 @@ division:"División"
 
 function sprache(s){
 
+aktivSprache=s;
+
+document.querySelectorAll(".lang-btn").forEach(function(b){ b.classList.remove("active"); });
+const langIds={de:"btnDe",en:"btnEn",es:"btnEs",zh:"btnZh"};
+document.getElementById(langIds[s]).classList.add("active");
+
 document.getElementById("titel").textContent=texte[s].titel;
+
+document.getElementById("pizza").textContent=texte[s].pizzaBtn;
+document.getElementById("pizzaTitel").textContent=texte[s].pizzaTitel;
+document.getElementById("pizzaSchliessenUnten").textContent=texte[s].pizzaSchliessen;
 
 document.getElementById("pruefen").textContent=texte[s].pruefen;
 document.getElementById("loesung").textContent=texte[s].loesung;
@@ -571,6 +851,12 @@ document.getElementById("txtSub").textContent = texte[s].subtraktion;
 document.getElementById("txtMul").textContent = texte[s].multiplikation;
 document.getElementById("txtDiv").textContent = texte[s].division;
 
+}
+
+function stufeAktiv(s){
+document.querySelectorAll(".stufe-btn").forEach(function(b){ b.classList.remove("active"); });
+const stufeIds={leicht:"btnLeicht",mittel:"btnMittel",schwer:"btnSchwer"};
+document.getElementById(stufeIds[s]).classList.add("active");
 }
 
 
@@ -1236,17 +1522,19 @@ stroke-width="2"/>
     return svg;
 }
 
-function pizzaBlock(titel,z,n){
+function pizzaBlock(titel,z,n,farbe,nennerKlasse,unterstreichen){
+
+    const klasse = farbe ? "pizzaKarte pizzaKarte-"+farbe : "pizzaKarte";
+    const nennerHtml = nennerKlasse ? `<span class="${nennerKlasse}">${n}</span>` : n;
+    const zahlStil = unterstreichen
+        ? "font-weight:bold;font-size:18px;margin-bottom:4px;text-decoration:underline;text-underline-offset:3px;"
+        : "font-weight:bold;font-size:18px;margin-bottom:4px;";
 
     return `
-    <div class="pizzaKarte">
+    <div class="${klasse}">
 
-        <div style="
-            font-weight:bold;
-            font-size:18px;
-            margin-bottom:4px;
-        ">
-            ${z}/${n}
+        <div style="${zahlStil}">
+            ${z}/${nennerHtml}
         </div>
 
         ${pizzaSVG(z,n)}
@@ -1262,7 +1550,9 @@ function pizzaBlock(titel,z,n){
     </div>`;
 }
 
-function pizzaZeile(elemente, zeichen){
+function pizzaZeile(elemente, zeichen, hlMap){
+
+    hlMap = hlMap || {};
 
     let html = `<div class="pizzaZeile">`;
 
@@ -1271,7 +1561,10 @@ function pizzaZeile(elemente, zeichen){
         html += elemente[i];
 
         if(i < zeichen.length){
-            html += `<div class="trenner">${zeichen[i]}</div>`;
+            let klasse = "trenner";
+            if(zeichen[i] === "=") klasse += " trenner-eq";
+            if(hlMap[i]) klasse += " trenner-hl-" + hlMap[i];
+            html += `<div class="${klasse}">${zeichen[i]}</div>`;
         }
     }
 
@@ -1295,61 +1588,92 @@ document.getElementById("pizza").onclick=function(){
 const e1 = bruch1.z*(h/bruch1.n);
 const e2 = bruch2.z*(h/bruch2.n);
 
+const nennerZuordnung = {};
 
-html+="<h2>✖ Multiplikation</h2>";
+// gemeinsamer Nenner bekommt immer Türkis
+nennerZuordnung[h] = "nenner-1";
+
+// abweichende Nenner ermitteln (verschieden vom gemeinsamen Nenner)
+const abweichendeNenner = [];
+if(bruch1.n !== h) abweichendeNenner.push(bruch1.n);
+if(bruch2.n !== h && !abweichendeNenner.includes(bruch2.n)) abweichendeNenner.push(bruch2.n);
+
+if(abweichendeNenner.length === 1){
+    // nur ein abweichender Nenner -> Rot
+    nennerZuordnung[abweichendeNenner[0]] = "nenner-2";
+} else if(abweichendeNenner.length === 2){
+    // zwei abweichende Nenner -> erster Indigo, zweiter Rot
+    nennerZuordnung[abweichendeNenner[0]] = "nenner-3";
+    nennerZuordnung[abweichendeNenner[1]] = "nenner-2";
+}
+
+function nennerFarbe(n){
+    return nennerZuordnung[n] || "nenner-1";
+}
+
+
+html+="<h2 class=\"pz-h-mul\">"+texte[aktivSprache].pz.mul+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-    pizzaBlock("Produkt",bruch1.z*bruch2.z,bruch1.n*bruch2.n),
-    pizzaBlock("gekürzt",mal.z,mal.n)
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n),
+    pizzaBlock(texte[aktivSprache].pz.produkt,bruch1.z*bruch2.z,bruch1.n*bruch2.n),
+    pizzaBlock(texte[aktivSprache].pz.gekuerzt,mal.z,mal.n)
 ],
-["·", "=", "="]
+["·", "=", "="],
+{0:"gruen"}
 );
 
-html+="<h2>➗ Division</h2>";
+html+="<hr class=\"pizzaTrenner\">";
+
+html+="<h2 class=\"pz-h-div\">"+texte[aktivSprache].pz.div+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("Kehrwert",bruch2.n,bruch2.z),
-    pizzaBlock("Quotient",bruch1.z*bruch2.n,bruch1.n*bruch2.z),
-    pizzaBlock("gekürzt",geteilt.z,geteilt.n)
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,"blau",null,true),
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
+    pizzaBlock(texte[aktivSprache].pz.kehrwert,bruch2.n,bruch2.z,"gruen",null,true),
+    pizzaBlock(texte[aktivSprache].pz.quotient,bruch1.z*bruch2.n,bruch1.n*bruch2.z),
+    pizzaBlock(texte[aktivSprache].pz.gekuerzt,geteilt.z,geteilt.n)
 ],
-[":", "=", "·", "=", "="]
+[":", "=", "·", "=", "="],
+{0:"blau", 2:"gruen"}
 );
 
+html+="<hr class=\"pizzaTrenner\">";
 
-html+="<h2>➕ Addition</h2>";
+html+="<h2 class=\"pz-h-add\">"+texte[aktivSprache].pz.add+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-    pizzaBlock("1. gleichnamig",e1,h),
-    pizzaBlock("2. gleichnamig",e2,h),
-    pizzaBlock("Summe",e1+e2,h),
-    pizzaBlock("gekürzt",plus.z,plus.n)
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,null,nennerFarbe(bruch1.n)),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,null,nennerFarbe(bruch2.n)),
+    pizzaBlock(texte[aktivSprache].pz.gleich1,e1,h,null,nennerFarbe(h)),
+    pizzaBlock(texte[aktivSprache].pz.gleich2,e2,h,null,nennerFarbe(h)),
+    pizzaBlock(texte[aktivSprache].pz.summe,e1+e2,h),
+    pizzaBlock(texte[aktivSprache].pz.gekuerzt,plus.z,plus.n)
 ],
-["+", "=", "+", "=", "="]
+["+", "=", "+", "=", "="],
+{0:"gelb", 2:"gelb"}
 );
 
+html+="<hr class=\"pizzaTrenner\">";
 
-html+="<h2>➖ Subtraktion</h2>";
+html+="<h2 class=\"pz-h-sub\">"+texte[aktivSprache].pz.sub+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock("1. Bruch",bruch1.z,bruch1.n),
-    pizzaBlock("2. Bruch",bruch2.z,bruch2.n),
-    pizzaBlock("1. gleichnamig",e1,h),
-    pizzaBlock("2. gleichnamig",e2,h),
-    pizzaBlock("Differenz",e1-e2,h),
-    pizzaBlock("gekürzt",minus.z,minus.n)
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,null,nennerFarbe(bruch1.n)),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,null,nennerFarbe(bruch2.n)),
+    pizzaBlock(texte[aktivSprache].pz.gleich1,e1,h,null,nennerFarbe(h)),
+    pizzaBlock(texte[aktivSprache].pz.gleich2,e2,h,null,nennerFarbe(h)),
+    pizzaBlock(texte[aktivSprache].pz.differenz,e1-e2,h),
+    pizzaBlock(texte[aktivSprache].pz.gekuerzt,minus.z,minus.n)
 ],
-["−", "=", "−", "=", "="]
+["−", "=", "−", "=", "="],
+{0:"lila", 2:"lila"}
 );
 
 
@@ -1362,11 +1686,12 @@ html += pizzaZeile(
 
 
 
-document.getElementById("pizzaSchliessen").onclick=function(){
-
+function pizzaSchliessenFn(){
     document.getElementById("pizzaModal").style.display="none";
+}
 
-};
+document.getElementById("pizzaSchliessen").onclick=pizzaSchliessenFn;
+document.getElementById("pizzaSchliessenUnten").onclick=pizzaSchliessenFn;
 
 document.getElementById("pizzaModal").onclick=function(e){
 
@@ -1374,6 +1699,15 @@ document.getElementById("pizzaModal").onclick=function(e){
         this.style.display="none";
 
 };
+
+document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){
+        const modal=document.getElementById("pizzaModal");
+        if(modal.style.display==="block"){
+            modal.style.display="none";
+        }
+    }
+});
 
 
 </script>
