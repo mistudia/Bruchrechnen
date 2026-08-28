@@ -7,7 +7,7 @@
 <title>miStudia – Bruchrechnen</title>
 <style>
 body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0}
-header,main,footer{max-width:900px;margin:auto}
+header,main,footer{max-width:960px;margin:auto}
 header{background:#fff;padding:20px;text-align:center}
 main{background:#fff;margin-top:20px;padding:20px;border-radius:12px}
 .toolbar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
@@ -17,7 +17,7 @@ button{padding:10px 16px;border:none;border-radius:8px;background:#1e88e5;color:
 .strich{width:55px;height:2px;background:#000}
 .aufgabe{
 display:grid;
-grid-template-columns:130px auto 160px;
+grid-template-columns:130px auto;
 gap:20px;
 align-items:center;
 margin:20px 0;
@@ -27,7 +27,7 @@ font-size:24px;
 .rechnung{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:8px;
     flex-wrap:nowrap;
     white-space:nowrap;
 }
@@ -49,6 +49,15 @@ width:40px;
 height:2px;
 background:#000;
 margin:2px 0;
+}
+
+.bruch-gemischt{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:26px;
+    font-weight:bold;
+    flex:0 0 auto;
 }
 
 input{font-size:22px;padding:8px;text-align:center}
@@ -160,6 +169,7 @@ margin-top:25px;
 padding:30px;
 border-radius:18px;
 box-shadow:0 8px 20px rgba(0,0,0,.12);
+overflow-x:auto;
 }
 
 body{
@@ -259,53 +269,40 @@ text-align:left;
 }
 
 .schritt{
-    width:170px;
+    width:150px;
 }
 
 #plus,
 #minus,
 #mal,
 #geteilt{
-    width:110px;
+    width:80px;
 }
 
 
 .toolbar-aktionen{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
+    display:flex;
     align-items:center;
-    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:24px;
     margin:12px 0;
 }
 
 .toolbar-links{
-    justify-self:start;
     display:flex;
     gap:10px;
     flex-wrap:wrap;
 }
 
 .toolbar-mitte{
-    justify-self:center;
+    display:flex;
 }
 
 .toolbar-rechts{
-    justify-self:end;
     display:flex;
     gap:10px;
     flex-wrap:wrap;
-}
-
-@media (max-width:560px){
-    .toolbar-aktionen{
-        grid-template-columns:1fr;
-        justify-items:center;
-    }
-    .toolbar-links,
-    .toolbar-mitte,
-    .toolbar-rechts{
-        justify-self:center;
-    }
 }
 
 .btn-pruefen{
@@ -341,7 +338,7 @@ text-align:left;
 .rechnung{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:8px;
     flex-wrap:nowrap;
     white-space:nowrap;
 }
@@ -369,7 +366,7 @@ text-align:left;
 
 #pizzaFenster{
     background:white;
-    width:min(1000px,92%);
+    width:min(1080px,95%);
     max-height:90vh;
     overflow:auto;
     margin:40px auto;
@@ -405,7 +402,7 @@ text-align:left;
     display:flex;
     align-items:center;
     gap:10px;
-    flex-wrap:nowrap;
+    flex-wrap:wrap;
     margin:8px 0 12px;
 }
 
@@ -418,7 +415,12 @@ text-align:left;
 }
 
 .trenner-eq{
-    color:#000;
+    align-self:stretch;
+    display:flex;
+    align-items:center;
+    color:#1976d2;
+    border-left:2px solid #b0b8c1;
+    padding:0 12px;
 }
 
 .trenner-hl-gelb{
@@ -466,6 +468,7 @@ text-align:left;
 .pz-h-sub{ background:#8e24aa; }
 
 .pizzaKarte{
+    box-sizing:border-box;
     border:1px solid #ddd;
     border-radius:12px;
     padding:6px;
@@ -489,7 +492,7 @@ text-align:left;
     color:#fff;
     background:#00acc1;
     display:inline-block;
-    padding:0 8px;
+    padding:0 6px;
     border-radius:6px;
 }
 
@@ -497,7 +500,7 @@ text-align:left;
     color:#fff;
     background:#e53935;
     display:inline-block;
-    padding:0 8px;
+    padding:0 6px;
     border-radius:6px;
 }
 
@@ -505,13 +508,18 @@ text-align:left;
     color:#fff;
     background:#3949ab;
     display:inline-block;
-    padding:0 8px;
+    padding:0 6px;
     border-radius:6px;
 }
 
 .pizzaSVG{
     width:85px;
     height:85px;
+}
+
+.pizzaSVG-mini{
+    width:38px;
+    height:38px;
 }
 
 
@@ -562,7 +570,9 @@ text-align:left;
 
 <button id="btnMittel" class="stufe-btn" onclick="stufe='mittel'; stufeAktiv('mittel'); neueBrueche();">🧠 Mittel</button>
 
-<button id="btnSchwer" class="stufe-btn" onclick="stufe='schwer'; stufeAktiv('schwer'); neueBrueche();">🔥 Schwer</button>
+<button id="btnKuerzen" class="stufe-btn" onclick="stufe='kuerzen'; stufeAktiv('kuerzen'); neueBrueche();">✂️ Kürzen</button>
+
+<button id="btnGemischt" class="stufe-btn" onclick="stufe='gemischt'; stufeAktiv('gemischt'); neueBrueche();">🔗 Gemischt</button>
 </div>
 
 </header>
@@ -688,7 +698,8 @@ loesung:"💡 Lösungen",
 neu:"🔄 Neue Brüche",
 leicht:"😊 Leicht",
 mittel:"🧠 Mittel",
-schwer:"🔥 Schwer",
+kuerzen:"✂️ Kürzen",
+gemischt:"🔗 Gemischt",
 
 addition:"Addition",
 subtraktion:"Subtraktion",
@@ -705,6 +716,8 @@ add:"Addition",
 sub:"Subtraktion",
 bruch1:"1. Bruch",
 bruch2:"2. Bruch",
+gekuerzt1:"1. gekürzt",
+gekuerzt2:"2. gekürzt",
 produkt:"Produkt",
 gekuerzt:"gekürzt",
 kehrwert:"Kehrwert",
@@ -723,7 +736,8 @@ loesung:"💡 Show answers",
 neu:"🔄 New fractions",
 leicht:"😊 Easy",
 mittel:"🧠 Medium",
-schwer:"🔥 Hard",
+kuerzen:"✂️ Simplify",
+gemischt:"🔗 Mixed",
 
 addition:"Addition",
 subtraktion:"Subtraction",
@@ -740,6 +754,8 @@ add:"Addition",
 sub:"Subtraction",
 bruch1:"1st fraction",
 bruch2:"2nd fraction",
+gekuerzt1:"1st reduced",
+gekuerzt2:"2nd reduced",
 produkt:"Product",
 gekuerzt:"reduced",
 kehrwert:"Reciprocal",
@@ -758,7 +774,8 @@ loesung:"💡 Soluciones",
 neu:"🔄 Nuevas fracciones",
 leicht:"😊 Fácil",
 mittel:"🧠 Medio",
-schwer:"🔥 Difícil",
+kuerzen:"✂️ Simplificar",
+gemischt:"🔗 Mixtos",
 
 addition:"Suma",
 subtraktion:"Resta",
@@ -775,6 +792,8 @@ add:"Suma",
 sub:"Resta",
 bruch1:"1.ª fracción",
 bruch2:"2.ª fracción",
+gekuerzt1:"1.ª simplificada",
+gekuerzt2:"2.ª simplificada",
 produkt:"Producto",
 gekuerzt:"simplificado",
 kehrwert:"Inverso",
@@ -793,7 +812,8 @@ loesung:"💡 显示答案",
 neu:"🔄 新的分数",
 leicht:"😊 简单",
 mittel:"🧠 中等",
-schwer:"🔥 困难",
+kuerzen:"✂️ 先约分",
+gemischt:"🔗 带分数",
 
 addition:"加法",
 subtraktion:"减法",
@@ -810,6 +830,8 @@ add:"加法",
 sub:"减法",
 bruch1:"第1个分数",
 bruch2:"第2个分数",
+gekuerzt1:"第1个约分后",
+gekuerzt2:"第2个约分后",
 produkt:"积",
 gekuerzt:"约分后",
 kehrwert:"倒数",
@@ -844,7 +866,8 @@ document.getElementById("neu").textContent=texte[s].neu;
 
 document.getElementById("btnLeicht").textContent=texte[s].leicht;
 document.getElementById("btnMittel").textContent=texte[s].mittel;
-document.getElementById("btnSchwer").textContent=texte[s].schwer;
+document.getElementById("btnKuerzen").textContent=texte[s].kuerzen;
+document.getElementById("btnGemischt").textContent=texte[s].gemischt;
 
 document.getElementById("txtAdd").textContent = texte[s].addition;
 document.getElementById("txtSub").textContent = texte[s].subtraktion;
@@ -855,7 +878,7 @@ document.getElementById("txtDiv").textContent = texte[s].division;
 
 function stufeAktiv(s){
 document.querySelectorAll(".stufe-btn").forEach(function(b){ b.classList.remove("active"); });
-const stufeIds={leicht:"btnLeicht",mittel:"btnMittel",schwer:"btnSchwer"};
+const stufeIds={leicht:"btnLeicht",mittel:"btnMittel",kuerzen:"btnKuerzen",gemischt:"btnGemischt"};
 document.getElementById(stufeIds[s]).classList.add("active");
 }
 
@@ -954,14 +977,27 @@ const mittel = [
 
 ];
 
-const schwer = [
+// Aufgaben mit nicht gekürzten Brüchen (erst kürzen!)
+const kuerzenAufgaben = [
 
-{z1:7,n1:12,z2:5,n2:18},
-{z1:11,n1:15,z2:7,n2:10},
-{z1:13,n1:20,z2:9,n2:14},
-{z1:9,n1:16,z2:11,n2:24},
-{z1:7,n1:18,z2:5,n2:12},
-{z1:11,n1:24,z2:13,n2:30}
+{z1:3,n1:10, z2:2,n2:15},
+{z1:3,n1:14, z2:2,n2:21},
+{z1:3,n1:10, z2:5,n2:12},
+{z1:5,n1:12, z2:2,n2:15},
+{z1:7,n1:10, z2:5,n2:14},
+{z1:5,n1:14, z2:2,n2:35}
+
+];
+
+// Aufgaben mit gemischten Zahlen
+const gemischt = [
+
+{g1:1,z1:1,n1:2, g2:2,z2:1,n2:3},
+{g1:2,z1:1,n1:4, g2:1,z2:2,n2:3},
+{g1:1,z1:3,n1:5, g2:1,z2:1,n2:2},
+{g1:3,z1:1,n1:3, g2:1,z2:1,n2:6},
+{g1:2,z1:1,n1:5, g2:1,z2:3,n2:4},
+{g1:1,z1:2,n1:3, g2:2,z2:1,n2:6}
 
 ];
 
@@ -1042,54 +1078,92 @@ function neueBrueche() {
     if (stufe === "mittel")
         liste = mittel;
 
-    if (stufe === "schwer")
-        liste = schwer;
+    if (stufe === "kuerzen")
+        liste = kuerzenAufgaben;
+
+    if (stufe === "gemischt")
+        liste = gemischt;
 
     const p = liste[Math.floor(Math.random()*liste.length)];
 
-    bruch1 = {
-        z:p.z1,
-        n:p.n1
-    };
+    if (stufe === "gemischt") {
 
-    bruch2 = {
-        z:p.z2,
-        n:p.n2
-    };
+        // Gemischte Zahl -> unechter Bruch für die Rechnung,
+        // ganz/restZ werden nur für die Anzeige gebraucht
+        bruch1 = {
+            z: p.g1 * p.n1 + p.z1,
+            n: p.n1,
+            ganz: p.g1,
+            restZ: p.z1
+        };
+
+        bruch2 = {
+            z: p.g2 * p.n2 + p.z2,
+            n: p.n2,
+            ganz: p.g2,
+            restZ: p.z2
+        };
+
+    } else {
+
+        bruch1 = {
+            z:p.z1,
+            n:p.n1
+        };
+
+        bruch2 = {
+            z:p.z2,
+            n:p.n2
+        };
+
+    }
 
 // Für Subtraktion meist negatives Ergebnis erzeugen
 if (bruch1.z * bruch2.n > bruch2.z * bruch1.n) {
     [bruch1, bruch2] = [bruch2, bruch1];
 }
 
- function bruchHTML(z,n){
-return `
+ function bruchHTML(b){
+
+    const zaehlerAnzeige = (b.ganz !== undefined) ? b.restZ : b.z;
+
+    const bruchTeil = `
 <div class="bruch-klein">
-<div>${z}</div>
+<div>${zaehlerAnzeige}</div>
 <div class="strich"></div>
-<div>${n}</div>
+<div>${b.n}</div>
 </div>`;
+
+    if (b.ganz !== undefined) {
+        return `
+<div class="bruch-gemischt">
+<span>${b.ganz}</span>
+${bruchTeil}
+</div>`;
+    }
+
+    return bruchTeil;
 }
 
 document.getElementById("plusText").innerHTML =
-    bruchHTML(bruch1.z,bruch1.n)+
+    bruchHTML(bruch1)+
     '<span class="op">+</span>'+
-    bruchHTML(bruch2.z,bruch2.n);
+    bruchHTML(bruch2);
 
 document.getElementById("minusText").innerHTML =
-    bruchHTML(bruch1.z,bruch1.n)+
+    bruchHTML(bruch1)+
     '<span class="op">−</span>'+
-    bruchHTML(bruch2.z,bruch2.n);
+    bruchHTML(bruch2);
 
 document.getElementById("malText").innerHTML =
-    bruchHTML(bruch1.z,bruch1.n)+
+    bruchHTML(bruch1)+
     '<span class="op">·</span>'+
-    bruchHTML(bruch2.z,bruch2.n);
+    bruchHTML(bruch2);
 
 document.getElementById("geteiltText").innerHTML =
-    bruchHTML(bruch1.z,bruch1.n)+
+    bruchHTML(bruch1)+
     '<span class="op">:</span>'+
-    bruchHTML(bruch2.z,bruch2.n);
+    bruchHTML(bruch2);
 
 document.querySelectorAll("input").forEach(f => {
     f.value = "";
@@ -1164,23 +1238,24 @@ function pruefeAntwort(eingabe, loesung) {
 
 function markiere(input, status) {
 
-    input.style.color = "black";
-
     if (status === "perfekt") {
 
-        input.style.background = "#c8e6c9";
+        input.style.background = "#66bb6a";
+        input.style.color = "white";
 
     }
 
     else if (status === "kuerzen") {
 
-        input.style.background = "#fff59d";
+        input.style.background = "#ffeb3b";
+        input.style.color = "black";
 
     }
 
     else {
 
-        input.style.background = "#ffcdd2";
+        input.style.background = "#ef5350";
+        input.style.color = "white";
 
     }
 
@@ -1324,7 +1399,8 @@ document.getElementById("minus2").value =
     (e1 - e2) + "/" + h;
 
     document.querySelectorAll("input").forEach(f=>{
-        f.style.background="#c8e6c9";
+        f.style.background="#66bb6a";
+        f.style.color="white";
     });
 
 loesungSichtbar = true;
@@ -1339,6 +1415,62 @@ document.getElementById("neu").onclick = function () {
 };
 
 neueBrueche();
+
+// ------------------------------
+// Kurzes Aufblinken beim Verlassen der Ergebnisfelder
+// ------------------------------
+
+function blinkRueckmeldung(input, loesung) {
+
+    if (input.value.trim() === "")
+        return;
+
+    const eingabe = leseBruch(input.value);
+    const status = pruefeAntwort(eingabe, loesung);
+
+    let farbe;
+    let textFarbe;
+
+    if (status === "perfekt") {
+        farbe = "#66bb6a";
+        textFarbe = "white";
+    } else if (status === "kuerzen") {
+        farbe = "#ffeb3b";
+        textFarbe = "black";
+    } else {
+        farbe = "#ef5350";
+        textFarbe = "white";
+    }
+
+    const alteBg = input.style.background;
+    const alteFarbe = input.style.color;
+
+    input.style.background = farbe;
+    input.style.color = textFarbe;
+
+    setTimeout(function () {
+        input.style.background = alteBg || "white";
+        input.style.color = alteFarbe || "black";
+    }, 600);
+
+}
+
+document.getElementById("mal").addEventListener("blur", function () {
+    blinkRueckmeldung(this, mul(bruch1, bruch2));
+});
+
+document.getElementById("geteilt").addEventListener("blur", function () {
+    blinkRueckmeldung(this, divi(bruch1, bruch2));
+});
+
+document.getElementById("plus").addEventListener("blur", function () {
+    blinkRueckmeldung(this, add(bruch1, bruch2));
+});
+
+document.getElementById("minus").addEventListener("blur", function () {
+    blinkRueckmeldung(this, sub(bruch1, bruch2));
+});
+
 
 function pizzaSVG(zaehler, nenner){
 
@@ -1387,6 +1519,15 @@ stroke-width="2"/>
 if(nenner == 1){
 
     let fuellung = mehrfach + rest;
+
+    // Bei 0/1 keine Füllung zeichnen (leere Pizza)
+    if(fuellung === 0){
+
+        svg += `
+</svg>`;
+
+        return svg;
+    }
 
     let fill;
 
@@ -1522,22 +1663,142 @@ stroke-width="2"/>
     return svg;
 }
 
-function pizzaBlock(titel,z,n,farbe,nennerKlasse,unterstreichen){
+// ------------------------------
+// Einzelne, einfarbig gefüllte Pizza (für Mehrfach-Darstellung)
+// ------------------------------
+
+function pizzaEinzelSVG(gefuellte, nenner){
+
+    const r = 80;
+    const cx = 90;
+    const cy = 90;
+
+    let svg = `
+<svg class="pizzaSVG-mini" viewBox="0 0 180 180">
+
+<circle
+cx="${cx}"
+cy="${cy}"
+r="${r}"
+fill="white"
+stroke="#444"
+stroke-width="2"/>
+`;
+
+    if(nenner == 1){
+
+        if(gefuellte >= 1){
+
+            svg += `
+<circle cx="${cx}" cy="${cy}" r="${r-2}" fill="#f7d774"/>
+<circle cx="${cx}" cy="${cy}" r="${r-12}" fill="#d32f2f" stroke="#444" stroke-width="2"/>
+`;
+
+        }
+
+        svg += `</svg>`;
+        return svg;
+    }
+
+    for(let i=0;i<nenner;i++){
+
+        const a1 = -Math.PI/2 + i*2*Math.PI/nenner;
+        const a2 = -Math.PI/2 + (i+1)*2*Math.PI/nenner;
+
+        const x1 = cx + r*Math.cos(a1);
+        const y1 = cy + r*Math.sin(a1);
+
+        const gross = (a2-a1)>Math.PI ? 1 : 0;
+
+        if(i < gefuellte){
+
+            svg += `
+<path
+d="M ${cx} ${cy}
+L ${cx+(r-2)*Math.cos(a1)} ${cy+(r-2)*Math.sin(a1)}
+A ${r-2} ${r-2} 0 ${gross} 1 ${cx+(r-2)*Math.cos(a2)} ${cy+(r-2)*Math.sin(a2)}
+Z"
+fill="#f7d774"/>
+`;
+
+            svg += `
+<path
+d="M ${cx} ${cy}
+L ${cx+(r-12)*Math.cos(a1)} ${cy+(r-12)*Math.sin(a1)}
+A ${r-12} ${r-12} 0 ${gross} 1 ${cx+(r-12)*Math.cos(a2)} ${cy+(r-12)*Math.sin(a2)}
+Z"
+fill="#d32f2f"
+stroke="#444" stroke-width="2"/>
+`;
+
+        }
+
+        svg += `
+<line
+x1="${cx}"
+y1="${cy}"
+x2="${x1}"
+y2="${y1}"
+stroke="#444"
+stroke-width="2"/>
+`;
+
+    }
+
+    svg += `</svg>`;
+
+    return svg;
+
+}
+
+function pizzaMehrfachHTML(z, n){
+
+    const mehrfach = Math.floor(z / n);
+    const rest = z % n;
+
+    let html = `<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;width:80px;margin:0 auto;">`;
+
+    for(let i=0; i<mehrfach; i++){
+        html += pizzaEinzelSVG(n, n);
+    }
+
+    if(rest > 0){
+        html += pizzaEinzelSVG(rest, n);
+    }
+
+    if(mehrfach === 0 && rest === 0){
+        html += pizzaEinzelSVG(0, n);
+    }
+
+    html += `</div>`;
+
+    return html;
+
+}
+
+function pizzaBlock(titel,z,n,farbe,nennerKlasse,unterstreichen,mehrfach){
 
     const klasse = farbe ? "pizzaKarte pizzaKarte-"+farbe : "pizzaKarte";
-    const nennerHtml = nennerKlasse ? `<span class="${nennerKlasse}">${n}</span>` : n;
-    const zahlStil = unterstreichen
-        ? "font-weight:bold;font-size:18px;margin-bottom:4px;text-decoration:underline;text-underline-offset:3px;"
-        : "font-weight:bold;font-size:18px;margin-bottom:4px;";
+    const istNegativ = z < 0;
+    const zAbs = Math.abs(z);
+    const nennerHtml = nennerKlasse ? `<span class="${nennerKlasse}" style="font-size:18px;font-weight:bold;line-height:1;">${n}</span>` : n;
+    const ausgleich = istNegativ ? "margin-left:-20px;" : "";
+    const wrapperStil = "display:inline-flex;align-items:center;margin-bottom:4px;" + ausgleich +
+        (unterstreichen ? "border-bottom:2px solid #333;padding-bottom:2px;" : "");
 
     return `
     <div class="${klasse}">
 
-        <div style="${zahlStil}">
-            ${z}/${nennerHtml}
+        <div style="${wrapperStil}">
+            ${istNegativ ? '<span style="font-size:20px;font-weight:bold;margin-right:4px;">&minus;</span>' : ''}
+            <div style="display:inline-flex;flex-direction:column;">
+                <div style="text-align:center;font-size:18px;font-weight:bold;line-height:1;">${zAbs}</div>
+                <div style="height:2px;background:#000;margin:3px 0;"></div>
+                <div style="text-align:center;font-size:18px;font-weight:bold;line-height:1;">${nennerHtml}</div>
+            </div>
         </div>
 
-        ${pizzaSVG(z,n)}
+        ${mehrfach ? pizzaMehrfachHTML(z,n) : pizzaSVG(z,n)}
 
         <div style="
             margin-top:4px;
@@ -1612,18 +1873,49 @@ function nennerFarbe(n){
 }
 
 
+// Nur bei ursprünglich gemischten Zahlen (Stufe "Gemischt") werden
+// Werte über 1 als mehrere einzelne Pizzen dargestellt
+const b1Mehrfach = bruch1.ganz !== undefined;
+const b2Mehrfach = bruch2.ganz !== undefined;
+
 html+="<h2 class=\"pz-h-mul\">"+texte[aktivSprache].pz.mul+"</h2>";
 
-html += pizzaZeile(
-[
-    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
-    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n),
-    pizzaBlock(texte[aktivSprache].pz.produkt,bruch1.z*bruch2.z,bruch1.n*bruch2.n),
-    pizzaBlock(texte[aktivSprache].pz.gekuerzt,mal.z,mal.n)
-],
-["·", "=", "="],
-{0:"gruen"}
-);
+if(stufe === "kuerzen"){
+
+    // Kürzen über Kreuz VOR dem Multiplizieren zeigen
+    const gKreuz1 = ggt(bruch1.z, bruch2.n);
+    const gKreuz2 = ggt(bruch2.z, bruch1.n);
+
+    const b1Gek = { z: bruch1.z/gKreuz1, n: bruch1.n/gKreuz2 };
+    const b2Gek = { z: bruch2.z/gKreuz2, n: bruch2.n/gKreuz1 };
+
+    html += pizzaZeile(
+    [
+        pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
+        pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n),
+        pizzaBlock(texte[aktivSprache].pz.gekuerzt1,b1Gek.z,b1Gek.n),
+        pizzaBlock(texte[aktivSprache].pz.gekuerzt2,b2Gek.z,b2Gek.n),
+        pizzaBlock(texte[aktivSprache].pz.produkt,b1Gek.z*b2Gek.z,b1Gek.n*b2Gek.n),
+        pizzaBlock(texte[aktivSprache].pz.gekuerzt,mal.z,mal.n)
+    ],
+    ["·", "=", "·", "=", "="],
+    {0:"gruen", 2:"gruen"}
+    );
+
+} else {
+
+    html += pizzaZeile(
+    [
+        pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,undefined,undefined,undefined,b1Mehrfach),
+        pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,undefined,undefined,undefined,b2Mehrfach),
+        pizzaBlock(texte[aktivSprache].pz.produkt,bruch1.z*bruch2.z,bruch1.n*bruch2.n),
+        pizzaBlock(texte[aktivSprache].pz.gekuerzt,mal.z,mal.n)
+    ],
+    ["·", "=", "="],
+    {0:"gruen"}
+    );
+
+}
 
 html+="<hr class=\"pizzaTrenner\">";
 
@@ -1631,10 +1923,10 @@ html+="<h2 class=\"pz-h-div\">"+texte[aktivSprache].pz.div+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
-    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,"blau",null,true),
-    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n),
-    pizzaBlock(texte[aktivSprache].pz.kehrwert,bruch2.n,bruch2.z,"gruen",null,true),
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,undefined,undefined,undefined,b1Mehrfach),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,"blau",null,false,b2Mehrfach),
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,undefined,undefined,undefined,b1Mehrfach),
+    pizzaBlock(texte[aktivSprache].pz.kehrwert,bruch2.n,bruch2.z,"gruen",null,false),
     pizzaBlock(texte[aktivSprache].pz.quotient,bruch1.z*bruch2.n,bruch1.n*bruch2.z),
     pizzaBlock(texte[aktivSprache].pz.gekuerzt,geteilt.z,geteilt.n)
 ],
@@ -1648,8 +1940,8 @@ html+="<h2 class=\"pz-h-add\">"+texte[aktivSprache].pz.add+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,null,nennerFarbe(bruch1.n)),
-    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,null,nennerFarbe(bruch2.n)),
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,null,nennerFarbe(bruch1.n),undefined,b1Mehrfach),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,null,nennerFarbe(bruch2.n),undefined,b2Mehrfach),
     pizzaBlock(texte[aktivSprache].pz.gleich1,e1,h,null,nennerFarbe(h)),
     pizzaBlock(texte[aktivSprache].pz.gleich2,e2,h,null,nennerFarbe(h)),
     pizzaBlock(texte[aktivSprache].pz.summe,e1+e2,h),
@@ -1665,8 +1957,8 @@ html+="<h2 class=\"pz-h-sub\">"+texte[aktivSprache].pz.sub+"</h2>";
 
 html += pizzaZeile(
 [
-    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,null,nennerFarbe(bruch1.n)),
-    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,null,nennerFarbe(bruch2.n)),
+    pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,null,nennerFarbe(bruch1.n),undefined,b1Mehrfach),
+    pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,null,nennerFarbe(bruch2.n),undefined,b2Mehrfach),
     pizzaBlock(texte[aktivSprache].pz.gleich1,e1,h,null,nennerFarbe(h)),
     pizzaBlock(texte[aktivSprache].pz.gleich2,e2,h,null,nennerFarbe(h)),
     pizzaBlock(texte[aktivSprache].pz.differenz,e1-e2,h),
