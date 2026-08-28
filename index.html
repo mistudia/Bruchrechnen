@@ -1782,15 +1782,14 @@ function pizzaBlock(titel,z,n,farbe,nennerKlasse,unterstreichen,mehrfach){
     const istNegativ = z < 0;
     const zAbs = Math.abs(z);
     const nennerHtml = nennerKlasse ? `<span class="${nennerKlasse}" style="font-size:18px;font-weight:bold;line-height:1;">${n}</span>` : n;
-    const ausgleich = istNegativ ? "margin-left:-20px;" : "";
-    const wrapperStil = "display:inline-flex;align-items:center;margin-bottom:4px;" + ausgleich +
+    const wrapperStil = "display:inline-flex;align-items:center;margin-bottom:4px;" +
         (unterstreichen ? "border-bottom:2px solid #333;padding-bottom:2px;" : "");
 
     return `
     <div class="${klasse}">
 
         <div style="${wrapperStil}">
-            ${istNegativ ? '<span style="font-size:20px;font-weight:bold;margin-right:4px;">&minus;</span>' : ''}
+            ${istNegativ ? '<span style="font-size:20px;font-weight:bold;margin-right:3px;">&minus;</span>' : ''}
             <div style="display:inline-flex;flex-direction:column;">
                 <div style="text-align:center;font-size:18px;font-weight:bold;line-height:1;">${zAbs}</div>
                 <div style="height:2px;background:#000;margin:3px 0;"></div>
