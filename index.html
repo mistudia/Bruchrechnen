@@ -548,6 +548,21 @@ text-align:left;
 
 
 
+
+.eig-bruch{display:flex;align-items:center;gap:8px;}
+.eig-stapel{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.eig-strich{width:60px;height:2px;background:#000;}
+input.eig-in{box-sizing:border-box;width:70px;height:40px;padding:4px;font-size:20px;font-weight:bold;}
+input.eig-ganz{box-sizing:border-box;width:56px;height:40px;padding:4px;font-size:20px;font-weight:bold;}
+input.eig-in::placeholder,input.eig-ganz::placeholder{color:#b5bcc6;font-weight:normal;}
+.eig-und{font-size:26px;font-weight:bold;color:#1976d2;}
+
+.toggle-btn{border:3px solid transparent;}
+.toggle-btn.active{border-color:#ffd54f;background:#1565c0;}
+main.drei .schritt{width:108px;font-size:16px;}
+main.drei #plus,main.drei #minus,main.drei #mal,main.drei #geteilt{width:74px;}
+main.drei .rechnung{gap:4px;}
+main.drei .op{margin:0 2px;}
 </style>
 </head>
 <body>
@@ -563,6 +578,7 @@ text-align:left;
 <button id="btnDe" class="lang-btn active" onclick="sprache('de')">🇩🇪</button>
 <button id="btnEn" class="lang-btn" onclick="sprache('en')">🇺🇸</button>
 <button id="btnEs" class="lang-btn" onclick="sprache('es')">🇪🇸</button>
+<button id="btnFr" class="lang-btn" onclick="sprache('fr')">🇫🇷</button>
 <button id="btnZh" class="lang-btn" onclick="sprache('zh')">🇨🇳</button>
 </div>
 <div class="toolbar">
@@ -573,6 +589,44 @@ text-align:left;
 <button id="btnKuerzen" class="stufe-btn" onclick="stufe='kuerzen'; stufeAktiv('kuerzen'); neueBrueche();">✂️ Kürzen</button>
 
 <button id="btnGemischt" class="stufe-btn" onclick="stufe='gemischt'; stufeAktiv('gemischt'); neueBrueche();">🔗 Gemischt</button>
+
+<button id="btnEigene" class="stufe-btn" onclick="stufe='eigene'; stufeAktiv('eigene'); neueBrueche();">✏️ Eigene</button>
+
+<button id="btnDrei" class="toggle-btn" onclick="dreiBrueche=!dreiBrueche; this.classList.toggle('active', dreiBrueche); neueBrueche();">➕ 3. Bruch</button>
+</div>
+
+<div id="eigenePanel" style="display:none;">
+    <div style="display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:14px;margin:6px 0 4px;">
+        <div class="eig-bruch">
+            <input class="eig-ganz" id="eg1" inputmode="numeric" placeholder="0" aria-label="ganze Zahl 1">
+            <div class="eig-stapel">
+                <input class="eig-in" id="ez1" inputmode="numeric" placeholder="1" aria-label="Zähler 1">
+                <div class="eig-strich"></div>
+                <input class="eig-in" id="en1" inputmode="numeric" placeholder="2" aria-label="Nenner 1">
+            </div>
+        </div>
+        <span class="eig-und">&amp;</span>
+        <div class="eig-bruch">
+            <input class="eig-ganz" id="eg2" inputmode="numeric" placeholder="0" aria-label="ganze Zahl 2">
+            <div class="eig-stapel">
+                <input class="eig-in" id="ez2" inputmode="numeric" placeholder="1" aria-label="Zähler 2">
+                <div class="eig-strich"></div>
+                <input class="eig-in" id="en2" inputmode="numeric" placeholder="2" aria-label="Nenner 2">
+            </div>
+        </div>
+        <span class="eig-und">&amp;</span>
+        <div class="eig-bruch" title="optional">
+            <input class="eig-ganz" id="eg3" inputmode="numeric" placeholder="0" aria-label="ganze Zahl 3">
+            <div class="eig-stapel">
+                <input class="eig-in" id="ez3" inputmode="numeric" placeholder="1" aria-label="Zähler 3">
+                <div class="eig-strich"></div>
+                <input class="eig-in" id="en3" inputmode="numeric" placeholder="2" aria-label="Nenner 3">
+            </div>
+        </div>
+        <button id="eigeneRechnen" class="btn-neu">▶ Rechnen</button>
+    </div>
+    <div id="eigeneHinweis" style="font-size:13px;color:#666;margin:2px 0;"></div>
+    <div id="eigeneFehler" style="color:#c62828;font-weight:bold;min-height:20px;font-size:15px;"></div>
 </div>
 
 </header>
@@ -700,6 +754,13 @@ leicht:"😊 Leicht",
 mittel:"🧠 Mittel",
 kuerzen:"✂️ Kürzen",
 gemischt:"🔗 Gemischt",
+eigene:"✏️ Eigene",
+eigeneRechnen:"▶ Rechnen",
+eigeneFehler:"Bitte ganze Zahlen eingeben (Nenner ≥ 1, Zahlen bis 999).",
+eigeneNull:"Der zweite Bruch darf nicht 0 sein (wegen der Division).",
+eigeneHinweis:"Beispiel: −1 ½ &amp; ¾ &amp; 2/5",
+drei:"➕ 3. Bruch",
+zuviel:"Zu viele Stücke zum Zeichnen",
 
 addition:"Addition",
 subtraktion:"Subtraktion",
@@ -716,6 +777,7 @@ add:"Addition",
 sub:"Subtraktion",
 bruch1:"1. Bruch",
 bruch2:"2. Bruch",
+bruch3:"3. Bruch",
 gekuerzt1:"1. gekürzt",
 gekuerzt2:"2. gekürzt",
 produkt:"Produkt",
@@ -724,6 +786,7 @@ kehrwert:"Kehrwert",
 quotient:"Quotient",
 gleich1:"1. gleichnamig",
 gleich2:"2. gleichnamig",
+gleich3:"3. gleichnamig",
 summe:"Summe",
 differenz:"Differenz"
 }
@@ -738,6 +801,13 @@ leicht:"😊 Easy",
 mittel:"🧠 Medium",
 kuerzen:"✂️ Simplify",
 gemischt:"🔗 Mixed",
+eigene:"✏️ Own",
+eigeneRechnen:"▶ Calculate",
+eigeneFehler:"Please enter whole numbers (denominator ≥ 1, numbers up to 999).",
+eigeneNull:"The second fraction must not be 0 (because of the division).",
+eigeneHinweis:"Example: −1 ½ &amp; ¾ &amp; 2/5",
+drei:"➕ 3rd fraction",
+zuviel:"Too many slices to draw",
 
 addition:"Addition",
 subtraktion:"Subtraction",
@@ -754,6 +824,7 @@ add:"Addition",
 sub:"Subtraction",
 bruch1:"1st fraction",
 bruch2:"2nd fraction",
+bruch3:"3rd fraction",
 gekuerzt1:"1st reduced",
 gekuerzt2:"2nd reduced",
 produkt:"Product",
@@ -762,6 +833,7 @@ kehrwert:"Reciprocal",
 quotient:"Quotient",
 gleich1:"1st common denominator",
 gleich2:"2nd common denominator",
+gleich3:"3rd common denominator",
 summe:"Sum",
 differenz:"Difference"
 }
@@ -776,6 +848,13 @@ leicht:"😊 Fácil",
 mittel:"🧠 Medio",
 kuerzen:"✂️ Simplificar",
 gemischt:"🔗 Mixtos",
+eigene:"✏️ Propias",
+eigeneRechnen:"▶ Calcular",
+eigeneFehler:"Introduce números enteros (denominador ≥ 1, números hasta 999).",
+eigeneNull:"La segunda fracción no puede ser 0 (por la división).",
+eigeneHinweis:"Ejemplo: −1 ½ &amp; ¾ &amp; 2/5",
+drei:"➕ 3.ª fracción",
+zuviel:"Demasiadas porciones para dibujar",
 
 addition:"Suma",
 subtraktion:"Resta",
@@ -792,6 +871,7 @@ add:"Suma",
 sub:"Resta",
 bruch1:"1.ª fracción",
 bruch2:"2.ª fracción",
+bruch3:"3.ª fracción",
 gekuerzt1:"1.ª simplificada",
 gekuerzt2:"2.ª simplificada",
 produkt:"Producto",
@@ -800,8 +880,56 @@ kehrwert:"Inverso",
 quotient:"Cociente",
 gleich1:"1.º común denominador",
 gleich2:"2.º común denominador",
+gleich3:"3.º común denominador",
 summe:"Suma",
 differenz:"Diferencia"
+}
+},
+
+fr:{
+titel:"Calcul de fractions",
+pruefen:"✓ Vérifier",
+loesung:"💡 Solutions",
+neu:"🔄 Nouvelles fractions",
+leicht:"😊 Facile",
+mittel:"🧠 Moyen",
+kuerzen:"✂️ Simplifier",
+gemischt:"🔗 Mixtes",
+eigene:"✏️ Perso",
+eigeneRechnen:"▶ Calculer",
+eigeneFehler:"Saisis des nombres entiers (dénominateur ≥ 1, nombres jusqu'à 999).",
+eigeneNull:"La deuxième fraction ne peut pas être 0 (à cause de la division).",
+eigeneHinweis:"Exemple: −1 ½ &amp; ¾ &amp; 2/5",
+drei:"➕ 3e fraction",
+zuviel:"Trop de parts pour dessiner",
+
+addition:"Addition",
+subtraktion:"Soustraction",
+multiplikation:"Multiplication",
+division:"Division",
+
+pizzaBtn:"🍕 Pizza",
+pizzaTitel:"🍕 Représentation en pizza",
+pizzaSchliessen:"✖ Fermer",
+pz:{
+mul:"Multiplication",
+div:"Division",
+add:"Addition",
+sub:"Soustraction",
+bruch1:"1re fraction",
+bruch2:"2e fraction",
+bruch3:"3e fraction",
+gekuerzt1:"1re simplifiée",
+gekuerzt2:"2e simplifiée",
+produkt:"Produit",
+gekuerzt:"simplifié",
+kehrwert:"Inverse",
+quotient:"Quotient",
+gleich1:"1re au même dénominateur",
+gleich2:"2e au même dénominateur",
+gleich3:"3e au même dénominateur",
+summe:"Somme",
+differenz:"Différence"
 }
 },
 
@@ -814,6 +942,13 @@ leicht:"😊 简单",
 mittel:"🧠 中等",
 kuerzen:"✂️ 先约分",
 gemischt:"🔗 带分数",
+eigene:"✏️ 自己出题",
+eigeneRechnen:"▶ 计算",
+eigeneFehler:"请输入整数（分母 ≥ 1，数字不超过999）。",
+eigeneNull:"第二个分数不能为0（因为要做除法）。",
+eigeneHinweis:"示例: −1 ½ &amp; ¾ &amp; 2/5",
+drei:"➕ 第3个分数",
+zuviel:"份数太多，无法绘制",
 
 addition:"加法",
 subtraktion:"减法",
@@ -830,6 +965,7 @@ add:"加法",
 sub:"减法",
 bruch1:"第1个分数",
 bruch2:"第2个分数",
+bruch3:"第3个分数",
 gekuerzt1:"第1个约分后",
 gekuerzt2:"第2个约分后",
 produkt:"积",
@@ -838,6 +974,7 @@ kehrwert:"倒数",
 quotient:"商",
 gleich1:"第1个通分",
 gleich2:"第2个通分",
+gleich3:"第3个通分",
 summe:"和",
 differenz:"差"
 }
@@ -851,7 +988,7 @@ function sprache(s){
 aktivSprache=s;
 
 document.querySelectorAll(".lang-btn").forEach(function(b){ b.classList.remove("active"); });
-const langIds={de:"btnDe",en:"btnEn",es:"btnEs",zh:"btnZh"};
+const langIds={de:"btnDe",en:"btnEn",es:"btnEs",fr:"btnFr",zh:"btnZh"};
 document.getElementById(langIds[s]).classList.add("active");
 
 document.getElementById("titel").textContent=texte[s].titel;
@@ -868,6 +1005,11 @@ document.getElementById("btnLeicht").textContent=texte[s].leicht;
 document.getElementById("btnMittel").textContent=texte[s].mittel;
 document.getElementById("btnKuerzen").textContent=texte[s].kuerzen;
 document.getElementById("btnGemischt").textContent=texte[s].gemischt;
+document.getElementById("btnEigene").textContent=texte[s].eigene;
+document.getElementById("btnDrei").textContent=texte[s].drei;
+document.getElementById("eigeneRechnen").textContent=texte[s].eigeneRechnen;
+document.getElementById("eigeneHinweis").innerHTML=texte[s].eigeneHinweis;
+zeigeEigeneFehler();
 
 document.getElementById("txtAdd").textContent = texte[s].addition;
 document.getElementById("txtSub").textContent = texte[s].subtraktion;
@@ -878,7 +1020,9 @@ document.getElementById("txtDiv").textContent = texte[s].division;
 
 function stufeAktiv(s){
 document.querySelectorAll(".stufe-btn").forEach(function(b){ b.classList.remove("active"); });
-const stufeIds={leicht:"btnLeicht",mittel:"btnMittel",kuerzen:"btnKuerzen",gemischt:"btnGemischt"};
+const stufeIds={leicht:"btnLeicht",mittel:"btnMittel",kuerzen:"btnKuerzen",gemischt:"btnGemischt",eigene:"btnEigene"};
+document.getElementById("eigenePanel").style.display = (s==="eigene") ? "block" : "none";
+document.getElementById("btnDrei").style.display = (s==="eigene") ? "none" : "";
 document.getElementById(stufeIds[s]).classList.add("active");
 }
 
@@ -1003,6 +1147,20 @@ const gemischt = [
 
 let bruch1;
 let bruch2;
+let bruch3 = null;
+let dreiBrueche = false;
+
+function brueche(){ return [bruch1, bruch2, bruch3].filter(Boolean); }
+
+function ergebnisse(){
+    const f = brueche();
+    let p=f[0], m=f[0], ml=f[0], d=f[0];
+    for (let i=1;i<f.length;i++){
+        p=add(p,f[i]); m=sub(m,f[i]); ml=mul(ml,f[i]); d=divi(d,f[i]);
+    }
+    return {plus:p, minus:m, mal:ml, geteilt:d};
+}
+
 
 function konfettiAusRuessel(){
 
@@ -1068,9 +1226,78 @@ function jubel(){
 }
 
 
+function vorzeichenNorm(z, n){
+    return n < 0 ? { z: -z, n: -n } : { z: z, n: n };
+}
+
+function leseEigeneZahl(id, leerWert){
+    const t = document.getElementById(id).value.replace(/\s/g,"").replace(/[−–]/g,"-");
+    if (t === "" ) return leerWert;
+    if (!/^-?\d{1,3}$/.test(t)) return null;
+    return parseInt(t, 10);
+}
+
+function eigenerBruch(gId, zId, nId){
+    const t = id => document.getElementById(id).value.replace(/\s/g,"").replace(/[−–]/g,"-");
+    const gMinus = t(gId).startsWith("-");
+    const zMinus = t(zId).startsWith("-");
+    const g = leseEigeneZahl(gId, 0);
+    const z = leseEigeneZahl(zId, null);
+    const n = leseEigeneZahl(nId, 1);
+    if (g === null || z === null || n === null || n < 1) return null;
+    // "-0" im Feld zählt auch als Minus
+    const neg = gMinus || zMinus;
+    const gA = Math.abs(g), zA = Math.abs(z);
+    const vz = neg ? -1 : 1;
+    if (gA > 0) {
+        return { z: vz*(gA*n + zA), n: n, ganz: gA, restZ: zA, neg: neg };
+    }
+    return { z: vz*zA, n: n, mehrfach: zA > n };
+}
+
+let eigeneFehlerKey = "";
+
+function zeigeEigeneFehler(){
+    document.getElementById("eigeneFehler").textContent = eigeneFehlerKey ? texte[aktivSprache][eigeneFehlerKey] : "";
+}
+
+function uebernimmEigene(){
+    eigeneFehlerKey = "";
+    zeigeEigeneFehler();
+    const b1 = eigenerBruch("eg1","ez1","en1");
+    const b2 = eigenerBruch("eg2","ez2","en2");
+    if (!b1 || !b2) {
+        eigeneFehlerKey = "eigeneFehler"; zeigeEigeneFehler();
+        return false;
+    }
+    let b3 = null;
+    const leer3 = ["eg3","ez3","en3"].every(id => document.getElementById(id).value.trim() === "");
+    if (!leer3) {
+        b3 = eigenerBruch("eg3","ez3","en3");
+        if (!b3) {
+            eigeneFehlerKey = "eigeneFehler"; zeigeEigeneFehler();
+            return false;
+        }
+    }
+    if (b2.z === 0 || (b3 && b3.z === 0)) {
+        eigeneFehlerKey = "eigeneNull"; zeigeEigeneFehler();
+        return false;
+    }
+    bruch1 = b1;
+    bruch2 = b2;
+    bruch3 = b3;
+    return true;
+}
+
 function neueBrueche() {
 
     let liste;
+
+    if (stufe === "eigene") {
+        if (!uebernimmEigene()) return;
+        zeigeAufgaben();
+        return;
+    }
 
     if (stufe === "leicht")
         liste = leicht;
@@ -1118,14 +1345,41 @@ function neueBrueche() {
 
     }
 
-// Für Subtraktion meist negatives Ergebnis erzeugen
-if (bruch1.z * bruch2.n > bruch2.z * bruch1.n) {
+bruch3 = null;
+
+if (dreiBrueche) {
+
+    // dritten Bruch aus einer anderen zufälligen Aufgabe derselben Stufe nehmen
+    let q = p;
+    for (let versuch = 0; versuch < 10 && q === p; versuch++)
+        q = liste[Math.floor(Math.random()*liste.length)];
+
+    const k = Math.random() < 0.5 ? 1 : 2;
+
+    if (stufe === "gemischt") {
+        const g = k === 1 ? q.g1 : q.g2;
+        const zz = k === 1 ? q.z1 : q.z2;
+        const nn = k === 1 ? q.n1 : q.n2;
+        bruch3 = { z: g*nn + zz, n: nn, ganz: g, restZ: zz };
+    } else {
+        bruch3 = { z: k === 1 ? q.z1 : q.z2, n: k === 1 ? q.n1 : q.n2 };
+    }
+
+} else if (bruch1.z * bruch2.n > bruch2.z * bruch1.n) {
+    // Für Subtraktion meist negatives Ergebnis erzeugen
     [bruch1, bruch2] = [bruch2, bruch1];
 }
 
+zeigeAufgaben();
+
+}
+
+function zeigeAufgaben() {
+
  function bruchHTML(b){
 
-    const zaehlerAnzeige = (b.ganz !== undefined) ? b.restZ : b.z;
+    const zaehlerAnzeige = (b.ganz !== undefined) ? b.restZ : Math.abs(b.z);
+    const minusHTML = (b.z < 0) ? '<span style="font-size:26px;font-weight:bold;margin-right:4px;">&minus;</span>' : '';
 
     const bruchTeil = `
 <div class="bruch-klein">
@@ -1136,36 +1390,36 @@ if (bruch1.z * bruch2.n > bruch2.z * bruch1.n) {
 
     if (b.ganz !== undefined) {
         return `
-<div class="bruch-gemischt">
-<span>${b.ganz}</span>
+<div class="bruch-gemischt" style="display:inline-flex;align-items:center;">
+${minusHTML}<span>${b.ganz}</span>
 ${bruchTeil}
 </div>`;
+    }
+
+    if (minusHTML) {
+        return `<div style="display:inline-flex;align-items:center;">${minusHTML}${bruchTeil}</div>`;
     }
 
     return bruchTeil;
 }
 
-document.getElementById("plusText").innerHTML =
-    bruchHTML(bruch1)+
-    '<span class="op">+</span>'+
-    bruchHTML(bruch2);
+function zeileHTML(op){
+    return brueche().map(function(b, idx){
+        let h = bruchHTML(b);
+        if (idx > 0 && b.z < 0)
+            h = '<span style="font-size:26px;">(</span>' + h + '<span style="font-size:26px;">)</span>';
+        return (idx > 0 ? '<span class="op">'+op+'</span>' : '') + h;
+    }).join("");
+}
 
-document.getElementById("minusText").innerHTML =
-    bruchHTML(bruch1)+
-    '<span class="op">−</span>'+
-    bruchHTML(bruch2);
+document.getElementById("plusText").innerHTML = zeileHTML("+");
+document.getElementById("minusText").innerHTML = zeileHTML("−");
+document.getElementById("malText").innerHTML = zeileHTML("·");
+document.getElementById("geteiltText").innerHTML = zeileHTML(":");
 
-document.getElementById("malText").innerHTML =
-    bruchHTML(bruch1)+
-    '<span class="op">·</span>'+
-    bruchHTML(bruch2);
+document.querySelector("main").classList.toggle("drei", !!bruch3);
 
-document.getElementById("geteiltText").innerHTML =
-    bruchHTML(bruch1)+
-    '<span class="op">:</span>'+
-    bruchHTML(bruch2);
-
-document.querySelectorAll("input").forEach(f => {
+document.querySelectorAll("main input").forEach(f => {
     f.value = "";
     f.style.background = "white";
     f.style.color = "black";
@@ -1263,10 +1517,11 @@ function markiere(input, status) {
 
 document.getElementById("pruefen").onclick = function () {
 
-    const ergPlus = add(bruch1, bruch2);
-    const ergMinus = sub(bruch1, bruch2);
-    const ergMal = mul(bruch1, bruch2);
-    const ergGeteilt = divi(bruch1, bruch2);
+    const erg = ergebnisse();
+    const ergPlus = erg.plus;
+    const ergMinus = erg.minus;
+    const ergMal = erg.mal;
+    const ergGeteilt = erg.geteilt;
 
     const felder = [
         {
@@ -1324,7 +1579,7 @@ document.getElementById("loesung").onclick = function () {
             document.getElementById(id).value="";
         });
 
-        document.querySelectorAll("input").forEach(f=>{
+        document.querySelectorAll("main input").forEach(f=>{
             f.style.background="white";
             f.style.color="black";
         });
@@ -1333,10 +1588,12 @@ document.getElementById("loesung").onclick = function () {
         return;
     }
 
-    const l1 = add(bruch1, bruch2);
-    const l2 = sub(bruch1, bruch2);
-    const l3 = mul(bruch1, bruch2);
-    const l4 = divi(bruch1, bruch2);
+    const erg = ergebnisse();
+    const l1 = erg.plus;
+    const l2 = erg.minus;
+    const l3 = erg.mal;
+    const l4 = erg.geteilt;
+    const f = brueche();
 
     function ausgabe(b){
         return b.n===1 ? String(b.z) : b.z+"/"+b.n;
@@ -1352,53 +1609,50 @@ document.getElementById("loesung").onclick = function () {
     // Multiplikation
     // -----------------------
 
-    document.getElementById("mal1").value =
-        bruch1.z+"·"+bruch2.z+" / "+bruch1.n+"·"+bruch2.n;
+    function klammer(x){ return x < 0 ? "(" + x + ")" : String(x); }
 
-    document.getElementById("mal2").value =
-        (bruch1.z*bruch2.z)+"/"+(bruch1.n*bruch2.n);
+    function kgV(a,b){
+        return a*b/ggt(a,b);
+    }
+
+    const prodZ = f.reduce((a,b)=>a*b.z, 1);
+    const prodN = f.reduce((a,b)=>a*b.n, 1);
+
+    document.getElementById("mal1").value =
+        f.map(b=>klammer(b.z)).join("·")+" / "+f.map(b=>b.n).join("·");
+
+    document.getElementById("mal2").value = prodZ+"/"+prodN;
 
     // -----------------------
     // Division
     // -----------------------
 
+    const rest = f.slice(1);
+    const kws = rest.map(b => vorzeichenNorm(b.n, b.z));
+    const quZ = f[0].z * rest.reduce((a,b)=>a*b.n, 1);
+    const quN = f[0].n * rest.reduce((a,b)=>a*b.z, 1);
+    const qu = vorzeichenNorm(quZ, quN);
+
     document.getElementById("geteilt1").value =
-        bruch1.z+"/"+bruch1.n+" · "+bruch2.n+"/"+bruch2.z;
+        klammer(f[0].z)+"/"+f[0].n + kws.map(k=>" · "+k.z+"/"+k.n).join("");
 
-    document.getElementById("geteilt2").value =
-        (bruch1.z*bruch2.n)+"/"+(bruch1.n*bruch2.z);
+    document.getElementById("geteilt2").value = qu.z+"/"+qu.n;
 
-function kgV(a,b){
-    return a*b/ggt(a,b);
-}
+    // -----------------------
+    // Addition / Subtraktion
+    // -----------------------
 
-// -----------------------
-// Addition
-// -----------------------
+    const h = f.reduce((a,b)=>kgV(a,b.n), 1);
+    const es = f.map(b => b.z * (h / b.n));
+    const term = (e,i) => (i === 0 ? e : klammer(e)) + "/" + h;
 
-let h = kgV(bruch1.n, bruch2.n);
+    document.getElementById("plus1").value = es.map(term).join(" + ");
+    document.getElementById("plus2").value = es.reduce((a,b)=>a+b, 0) + "/" + h;
 
-let e1 = bruch1.z * (h / bruch1.n);
-let e2 = bruch2.z * (h / bruch2.n);
+    document.getElementById("minus1").value = es.map(term).join(" - ");
+    document.getElementById("minus2").value = es.slice(1).reduce((a,b)=>a-b, es[0]) + "/" + h;
 
-document.getElementById("plus1").value =
-    e1 + "/" + h + " + " + e2 + "/" + h;
-
-document.getElementById("plus2").value =
-    (e1 + e2) + "/" + h;
-
-
-// -----------------------
-// Subtraktion
-// -----------------------
-
-document.getElementById("minus1").value =
-    e1 + "/" + h + " - " + e2 + "/" + h;
-
-document.getElementById("minus2").value =
-    (e1 - e2) + "/" + h;
-
-    document.querySelectorAll("input").forEach(f=>{
+    document.querySelectorAll("main input").forEach(f=>{
         f.style.background="#66bb6a";
         f.style.color="white";
     });
@@ -1415,6 +1669,56 @@ document.getElementById("neu").onclick = function () {
 };
 
 neueBrueche();
+
+document.getElementById("eigeneHinweis").innerHTML = texte[aktivSprache].eigeneHinweis;
+document.getElementById("eigeneRechnen").onclick = function(){ neueBrueche(); };
+["eg1","ez1","en1","eg2","ez2","en2","eg3","ez3","en3"].forEach(function(id){
+    document.getElementById(id).addEventListener("keydown", function(e){
+        if (e.key === "Enter") neueBrueche();
+    });
+});
+
+// ------------------------------
+// Pfeiltasten-Navigation zwischen allen Eingabefeldern
+// ------------------------------
+
+document.addEventListener("keydown", function(e){
+
+    const el = e.target;
+    if (!el || el.tagName !== "INPUT") return;
+    if (!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)) return;
+
+    // Links/Rechts nur am Textrand wechseln, sonst Cursor normal bewegen
+    if (e.key === "ArrowLeft" && el.selectionStart !== 0) return;
+    if (e.key === "ArrowRight" && el.selectionEnd !== el.value.length) return;
+
+    const r0 = el.getBoundingClientRect();
+    const cx = r0.left + r0.width/2, cy = r0.top + r0.height/2;
+
+    let bester = null, besterWert = Infinity;
+
+    document.querySelectorAll("input").forEach(function(c){
+        if (c === el || c.offsetParent === null) return;
+        const r = c.getBoundingClientRect();
+        const dx = (r.left + r.width/2) - cx;
+        const dy = (r.top + r.height/2) - cy;
+
+        let haupt, quer;
+        if (e.key === "ArrowRight") { if (dx <= 5) return; haupt = dx; quer = Math.abs(dy); }
+        if (e.key === "ArrowLeft")  { if (dx >= -5) return; haupt = -dx; quer = Math.abs(dy); }
+        if (e.key === "ArrowDown")  { if (dy <= 5) return; haupt = dy; quer = Math.abs(dx); }
+        if (e.key === "ArrowUp")    { if (dy >= -5) return; haupt = -dy; quer = Math.abs(dx); }
+
+        const wert = haupt + 3*quer;
+        if (wert < besterWert) { besterWert = wert; bester = c; }
+    });
+
+    if (bester) {
+        e.preventDefault();
+        bester.focus();
+        bester.select();
+    }
+});
 
 // ------------------------------
 // Kurzes Aufblinken beim Verlassen der Ergebnisfelder
@@ -1456,19 +1760,19 @@ function blinkRueckmeldung(input, loesung) {
 }
 
 document.getElementById("mal").addEventListener("blur", function () {
-    blinkRueckmeldung(this, mul(bruch1, bruch2));
+    blinkRueckmeldung(this, ergebnisse().mal);
 });
 
 document.getElementById("geteilt").addEventListener("blur", function () {
-    blinkRueckmeldung(this, divi(bruch1, bruch2));
+    blinkRueckmeldung(this, ergebnisse().geteilt);
 });
 
 document.getElementById("plus").addEventListener("blur", function () {
-    blinkRueckmeldung(this, add(bruch1, bruch2));
+    blinkRueckmeldung(this, ergebnisse().plus);
 });
 
 document.getElementById("minus").addEventListener("blur", function () {
-    blinkRueckmeldung(this, sub(bruch1, bruch2));
+    blinkRueckmeldung(this, ergebnisse().minus);
 });
 
 
@@ -1667,7 +1971,7 @@ stroke-width="2"/>
 // Einzelne, einfarbig gefüllte Pizza (für Mehrfach-Darstellung)
 // ------------------------------
 
-function pizzaEinzelSVG(gefuellte, nenner){
+function pizzaEinzelSVG(gefuellte, nenner, negativ){
 
     const r = 80;
     const cx = 90;
@@ -1675,6 +1979,7 @@ function pizzaEinzelSVG(gefuellte, nenner){
 
     let svg = `
 <svg class="pizzaSVG-mini" viewBox="0 0 180 180">
+<defs><pattern id="schraffur" patternUnits="userSpaceOnUse" width="6" height="6"><rect width="6" height="6" fill="#fff7d6"/><path d="M0,6 L6,0" stroke="#000" stroke-width="1.3"/></pattern></defs>
 
 <circle
 cx="${cx}"
@@ -1687,7 +1992,11 @@ stroke-width="2"/>
 
     if(nenner == 1){
 
-        if(gefuellte >= 1){
+        if(gefuellte >= 1 && negativ){
+
+            svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#schraffur)"/>`;
+
+        } else if(gefuellte >= 1){
 
             svg += `
 <circle cx="${cx}" cy="${cy}" r="${r-2}" fill="#f7d774"/>
@@ -1710,7 +2019,18 @@ stroke-width="2"/>
 
         const gross = (a2-a1)>Math.PI ? 1 : 0;
 
-        if(i < gefuellte){
+        if(i < gefuellte && negativ){
+
+            svg += `
+<path
+d="M ${cx} ${cy}
+L ${cx+r*Math.cos(a1)} ${cy+r*Math.sin(a1)}
+A ${r} ${r} 0 ${gross} 1 ${cx+r*Math.cos(a2)} ${cy+r*Math.sin(a2)}
+Z"
+fill="url(#schraffur)"/>
+`;
+
+        } else if(i < gefuellte){
 
             svg += `
 <path
@@ -1753,17 +2073,19 @@ stroke-width="2"/>
 
 function pizzaMehrfachHTML(z, n){
 
+    const neg = z < 0;
+    z = Math.abs(z);
     const mehrfach = Math.floor(z / n);
     const rest = z % n;
 
     let html = `<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;width:80px;margin:0 auto;">`;
 
     for(let i=0; i<mehrfach; i++){
-        html += pizzaEinzelSVG(n, n);
+        html += pizzaEinzelSVG(n, n, neg);
     }
 
     if(rest > 0){
-        html += pizzaEinzelSVG(rest, n);
+        html += pizzaEinzelSVG(rest, n, neg);
     }
 
     if(mehrfach === 0 && rest === 0){
@@ -1797,7 +2119,7 @@ function pizzaBlock(titel,z,n,farbe,nennerKlasse,unterstreichen,mehrfach){
             </div>
         </div>
 
-        ${mehrfach ? pizzaMehrfachHTML(z,n) : pizzaSVG(z,n)}
+        ${(n > 48 || Math.ceil(zAbs/n) > 12) ? `<div style="height:85px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#777;">${texte[aktivSprache].zuviel}</div>` : (mehrfach ? pizzaMehrfachHTML(z,n) : pizzaSVG(z,n))}
 
         <div style="
             margin-top:4px;
@@ -1834,7 +2156,75 @@ function pizzaZeile(elemente, zeichen, hlMap){
 }
 
 
+function pizzaDreiHTML(){
+
+    const T = texte[aktivSprache].pz;
+    const f = brueche();
+    const mf = f.map(b => b.ganz !== undefined || !!b.mehrfach);
+
+    const erg = ergebnisse();
+    const h = f.reduce((a,b)=>a*b.n/ggt(a,b.n), 1);
+    const es = f.map(b => b.z * (h/b.n));
+
+    const farben = ["nenner-2","nenner-3"];
+    const zuordnung = {};
+    zuordnung[h] = "nenner-1";
+    let fi = 0;
+    f.forEach(b => { if(!(b.n in zuordnung)){ zuordnung[b.n] = farben[fi % 2]; fi++; } });
+    const nf = n => zuordnung[n] || "nenner-1";
+
+    const orig = (mitFarbe) => f.map((b,i) =>
+        pizzaBlock(T["bruch"+(i+1)] || (i+1)+". Bruch", b.z, b.n, null, mitFarbe ? nf(b.n) : undefined, undefined, mf[i]));
+
+    let html = "";
+
+    // Multiplikation
+    html += "<h2 class=\"pz-h-mul\">"+T.mul+"</h2>";
+    const pZ = f.reduce((a,b)=>a*b.z,1), pN = f.reduce((a,b)=>a*b.n,1);
+    html += pizzaZeile(
+        orig(false).concat([pizzaBlock(T.produkt,pZ,pN), pizzaBlock(T.gekuerzt,erg.mal.z,erg.mal.n)]),
+        ["·","·","=","="].slice(0,f.length-1).concat(["=","="]),
+        {0:"gruen",1:"gruen"}
+    );
+    html += "<hr class=\"pizzaTrenner\">";
+
+    // Division
+    html += "<h2 class=\"pz-h-div\">"+T.div+"</h2>";
+    html += pizzaZeile(orig(false), [":",":"].slice(0,f.length-1), {0:"blau",1:"blau"});
+    const kw = f.slice(1).map(b => vorzeichenNorm(b.n,b.z));
+    const quo = vorzeichenNorm(f[0].z*f.slice(1).reduce((a,b)=>a*b.n,1), f[0].n*f.slice(1).reduce((a,b)=>a*b.z,1));
+    html += pizzaZeile(
+        [pizzaBlock(T.bruch1,f[0].z,f[0].n,undefined,undefined,undefined,mf[0])]
+            .concat(kw.map((k,i)=>pizzaBlock(T.kehrwert,k.z,k.n,"gruen"))),
+        ["·","·"].slice(0,f.length-1),
+        {0:"gruen",1:"gruen"}
+    ).replace(/<\/div>$/, "") +
+    '<div class="trenner trenner-eq">=</div>' + pizzaBlock(T.quotient,quo.z,quo.n) +
+    '<div class="trenner trenner-eq">=</div>' + pizzaBlock(T.gekuerzt,erg.geteilt.z,erg.geteilt.n) + "</div>";
+    html += "<hr class=\"pizzaTrenner\">";
+
+    // Addition und Subtraktion
+    [["add","+","summe","gelb","plus"],["sub","−","differenz","lila","minus"]].forEach(function(t, idx){
+        html += "<h2 class=\"pz-h-"+t[0]+"\">"+T[t[0]]+"</h2>";
+        html += pizzaZeile(orig(true), [t[1],t[1]].slice(0,f.length-1), {0:t[3],1:t[3]});
+        const gl = es.map((e,i)=>pizzaBlock(T["gleich"+(i+1)] || (i+1)+". gleichnamig", e, h, null, nf(h)));
+        const ergZ = t[0]==="add" ? es.reduce((a,b)=>a+b,0) : es.slice(1).reduce((a,b)=>a-b, es[0]);
+        html += pizzaZeile(gl, [t[1],t[1]].slice(0,f.length-1), {0:t[3],1:t[3]}).replace(/<\/div>$/, "") +
+            '<div class="trenner trenner-eq">=</div>' + pizzaBlock(T[t[2]], ergZ, h) +
+            '<div class="trenner trenner-eq">=</div>' + pizzaBlock(T.gekuerzt, erg[t[4]].z, erg[t[4]].n) + "</div>";
+        if (idx === 0) html += "<hr class=\"pizzaTrenner\">";
+    });
+
+    return html;
+}
+
 document.getElementById("pizza").onclick=function(){
+
+    if (bruch3) {
+        document.getElementById("pizzaInhalt").innerHTML = pizzaDreiHTML();
+        document.getElementById("pizzaModal").style.display = "block";
+        return;
+    }
 
     const plus=add(bruch1,bruch2);
     const minus=sub(bruch1,bruch2);
@@ -1874,8 +2264,11 @@ function nennerFarbe(n){
 
 // Nur bei ursprünglich gemischten Zahlen (Stufe "Gemischt") werden
 // Werte über 1 als mehrere einzelne Pizzen dargestellt
-const b1Mehrfach = bruch1.ganz !== undefined;
-const b2Mehrfach = bruch2.ganz !== undefined;
+const kwP = vorzeichenNorm(bruch2.n, bruch2.z);
+const quP = vorzeichenNorm(bruch1.z*bruch2.n, bruch1.n*bruch2.z);
+
+const b1Mehrfach = bruch1.ganz !== undefined || !!bruch1.mehrfach;
+const b2Mehrfach = bruch2.ganz !== undefined || !!bruch2.mehrfach;
 
 html+="<h2 class=\"pz-h-mul\">"+texte[aktivSprache].pz.mul+"</h2>";
 
@@ -1925,8 +2318,8 @@ html += pizzaZeile(
     pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,undefined,undefined,undefined,b1Mehrfach),
     pizzaBlock(texte[aktivSprache].pz.bruch2,bruch2.z,bruch2.n,"blau",null,false,b2Mehrfach),
     pizzaBlock(texte[aktivSprache].pz.bruch1,bruch1.z,bruch1.n,undefined,undefined,undefined,b1Mehrfach),
-    pizzaBlock(texte[aktivSprache].pz.kehrwert,bruch2.n,bruch2.z,"gruen",null,false),
-    pizzaBlock(texte[aktivSprache].pz.quotient,bruch1.z*bruch2.n,bruch1.n*bruch2.z),
+    pizzaBlock(texte[aktivSprache].pz.kehrwert,kwP.z,kwP.n,"gruen",null,false),
+    pizzaBlock(texte[aktivSprache].pz.quotient,quP.z,quP.n),
     pizzaBlock(texte[aktivSprache].pz.gekuerzt,geteilt.z,geteilt.n)
 ],
 [":", "=", "·", "=", "="],
